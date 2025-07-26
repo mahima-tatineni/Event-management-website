@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Mail, Lock, User, Phone, Building, ArrowLeft, Upload, Chrome } from "lucide-react"
+import { Mail, Lock, User, Phone, ArrowLeft, Upload, Chrome } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
@@ -54,6 +54,22 @@ export default function RegisterPage() {
   ]
 
   const years = ["1st Year", "2nd Year", "3rd Year", "4th Year"]
+
+  const clubOptions = [
+    // Central Clubs
+    { name: "CIE Club", category: "Central", description: "Center for Innovation and Entrepreneurship" },
+    { name: "SCOPE Club", category: "Central", description: "Student Community of Programming Enthusiasts" },
+    { name: "Literati Club", category: "Central", description: "Literary and Cultural Society" },
+    { name: "EWB Club", category: "Central", description: "Engineers Without Borders" },
+    { name: "CAM Club", category: "Central", description: "Camera and Media Club" },
+    // Departmental Clubs
+    { name: "SQUAD Club", category: "Departmental", description: "Software Quality and Development" },
+    { name: "CODE Club", category: "Departmental", description: "Competitive Programming Club" },
+    { name: "ME Club", category: "Departmental", description: "Mechanical Engineering Club" },
+    { name: "AKRITI Club", category: "Departmental", description: "Design and Creative Arts" },
+    { name: "ROBOTICS Club", category: "Departmental", description: "Robotics and Automation" },
+    { name: "AIM Club", category: "Departmental", description: "Artificial Intelligence and Machine Learning" },
+  ]
 
   const handleInputChange = (field: string, value: string) => {
     if (field.startsWith("socialLinks.")) {
@@ -108,6 +124,7 @@ export default function RegisterPage() {
         email: formData.email,
         role: activeTab,
         name: formData.name,
+        phone: formData.phone,
         ...(activeTab === "student" && {
           rollNo: formData.rollNo,
           department: formData.department,
@@ -337,22 +354,40 @@ export default function RegisterPage() {
 
               <TabsContent value="club" className="space-y-4 mt-0">
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="club-name">Club Name</Label>
-                      <div className="relative">
-                        <Building className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                        <Input
-                          id="club-name"
-                          placeholder="Enter club name"
-                          value={formData.clubName}
-                          onChange={(e) => handleInputChange("clubName", e.target.value)}
-                          className="pl-10 h-12 border-gray-200 focus:border-purple-400"
-                          required
-                        />
-                      </div>
-                    </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="club-select">Select Club</Label>
+                    <Select onValueChange={(value) => handleInputChange("clubName", value)} required>
+                      <SelectTrigger className="h-12 border-gray-200 focus:border-purple-400">
+                        <SelectValue placeholder="Choose your club" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <div className="px-2 py-1 text-sm font-semibold text-purple-600">Central Clubs</div>
+                        {clubOptions
+                          .filter((club) => club.category === "Central")
+                          .map((club) => (
+                            <SelectItem key={club.name} value={club.name}>
+                              <div>
+                                <div className="font-medium">{club.name}</div>
+                                <div className="text-xs text-gray-500">{club.description}</div>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        <div className="px-2 py-1 text-sm font-semibold text-blue-600 mt-2">Departmental Clubs</div>
+                        {clubOptions
+                          .filter((club) => club.category === "Departmental")
+                          .map((club) => (
+                            <SelectItem key={club.name} value={club.name}>
+                              <div>
+                                <div className="font-medium">{club.name}</div>
+                                <div className="text-xs text-gray-500">{club.description}</div>
+                              </div>
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="club-contact-name">Contact Person Name</Label>
                       <div className="relative">
@@ -367,6 +402,18 @@ export default function RegisterPage() {
                         />
                       </div>
                     </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="club-venue">Workspace/Venue</Label>
+                      <Input
+                        id="club-venue"
+                        placeholder="e.g., Room 301, CSE Block"
+                        value={formData.venue}
+                        onChange={(e) => handleInputChange("venue", e.target.value)}
+                        className="h-12 border-gray-200 focus:border-purple-400"
+                        required
+                      />
+                    </div>
                   </div>
 
                   <div className="space-y-2">
@@ -377,18 +424,6 @@ export default function RegisterPage() {
                       value={formData.description}
                       onChange={(e) => handleInputChange("description", e.target.value)}
                       className="min-h-[100px] border-gray-200 focus:border-purple-400"
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="club-venue">Workspace/Venue</Label>
-                    <Input
-                      id="club-venue"
-                      placeholder="e.g., Room 301, CSE Block"
-                      value={formData.venue}
-                      onChange={(e) => handleInputChange("venue", e.target.value)}
-                      className="h-12 border-gray-200 focus:border-purple-400"
                       required
                     />
                   </div>
