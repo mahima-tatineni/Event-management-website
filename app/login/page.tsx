@@ -56,29 +56,11 @@ export default function LoginPage() {
         return
       }
 
-      // Mock login for students and clubs
-      // In a real app, this would be an API call
-      const mockUsers = [
-        {
-          email: "student@mlrit.ac.in",
-          password: "password123",
-          role: "student",
-          name: "John Doe",
-          rollNo: "21A91A0501",
-          department: "Computer Science Engineering",
-          year: "3rd Year",
-        },
-        {
-          email: "club@mlrit.ac.in",
-          password: "password123",
-          role: "club",
-          name: "Tech Club",
-          clubName: "CIE Club",
-          description: "Center for Innovation and Entrepreneurship",
-        },
-      ]
+      // Get users from database
+      const storedUsers = JSON.parse(localStorage.getItem("users") || "[]")
 
-      const user = mockUsers.find((u) => u.email === formData.email && u.password === formData.password)
+      // Check for existing user
+      const user = storedUsers.find((u: any) => u.email === formData.email && u.password === formData.password)
 
       if (user) {
         localStorage.setItem("user", JSON.stringify(user))

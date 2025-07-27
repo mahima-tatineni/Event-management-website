@@ -28,6 +28,7 @@ import { useRouter } from "next/navigation"
 
 export default function ClubDashboard() {
   const [user, setUser] = useState<any>(null)
+  const [notifications, setNotifications] = useState<any[]>([])
   const router = useRouter()
 
   useEffect(() => {
@@ -42,11 +43,28 @@ export default function ClubDashboard() {
     } else {
       router.push("/login")
     }
+
+    // Load notifications for this club
+    const clubNotifications = JSON.parse(localStorage.getItem("clubNotifications") || "[]")
+    const userClubNotifications = clubNotifications.filter(
+      (notif: any) => notif.club === (userData ? JSON.parse(userData).clubName || JSON.parse(userData).name : ""),
+    )
+    setNotifications(userClubNotifications)
   }, [router])
 
   const handleLogout = () => {
     localStorage.removeItem("user")
     router.push("/")
+  }
+
+  const markNotificationAsRead = (notificationId: number) => {
+    const allNotifications = JSON.parse(localStorage.getItem("clubNotifications") || "[]")
+    const updatedNotifications = allNotifications.map((notif: any) =>
+      notif.id === notificationId ? { ...notif, read: true } : notif,
+    )
+    localStorage.setItem("clubNotifications", JSON.stringify(updatedNotifications))
+
+    setNotifications((prev) => prev.map((notif) => (notif.id === notificationId ? { ...notif, read: true } : notif)))
   }
 
   const clubEvents = [
@@ -65,14 +83,14 @@ export default function ClubDashboard() {
     },
     {
       id: 2,
-      title: "Coding Workshop",
+      title: "AI & Machine Learning Workshop",
       date: "2024-02-20",
       time: "2:00 PM",
       venue: "Lab 301",
-      price: 100,
+      price: 150,
       status: "pending",
       registrations: 0,
-      maxCapacity: 50,
+      maxCapacity: 80,
       revenue: 0,
       image: "/placeholder.svg?height=200&width=300",
     },
@@ -108,6 +126,8 @@ export default function ClubDashboard() {
     pendingApprovals: 1,
   }
 
+  const unreadNotifications = notifications.filter((notif) => !notif.read)
+
   if (!user) {
     return <div>Loading...</div>
   }
@@ -130,7 +150,11 @@ export default function ClubDashboard() {
             <div className="flex items-center space-x-4">
               <Button variant="outline" size="sm" className="relative bg-transparent">
                 <Bell className="w-4 h-4" />
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full text-xs"></span>
+                {unreadNotifications.length > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center">
+                    {unreadNotifications.length}
+                  </span>
+                )}
               </Button>
               <Link href="/club/new-event">
                 <Button
@@ -191,6 +215,12 @@ export default function ClubDashboard() {
                       Events
                     </Button>
                   </Link>
+                  <Link href="/club/calendar">
+                    <Button variant="ghost" className="w-full justify-start">
+                      <Calendar className="w-4 h-4 mr-2" />
+                      Calendar
+                    </Button>
+                  </Link>
                   <Link href="/club/analytics">
                     <Button variant="ghost" className="w-full justify-start">
                       <BarChart3 className="w-4 h-4 mr-2" />
@@ -210,6 +240,43 @@ export default function ClubDashboard() {
 
           {/* Main Content */}
           <div className="lg:col-span-3">
+            {/* Notifications */}
+            {unreadNotifications.length > 0 && (
+              <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm mb-6">
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Bell className="w-5 h-5 mr-2" />
+                    Notifications ({unreadNotifications.length})
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {unreadNotifications.slice(0, 3).map((notification) => (
+                      <div
+                        key={notification.id}
+                        className={`p-4 rounded-lg border-l-4 ${
+                          notification.type === "approval" ? "bg-green-50 border-green-500" : "bg-red-50 border-red-500"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <h4 className="font-semibold text-gray-800">{notification.title}</h4>
+                            <p className="text-sm text-gray-600 mt-1">{notification.message}</p>
+                            <p className="text-xs text-gray-500 mt-2">
+                              {new Date(notification.timestamp).toLocaleString()}
+                            </p>
+                          </div>
+                          <Button size="sm" variant="outline" onClick={() => markNotificationAsRead(notification.id)}>
+                            Mark as Read
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm">

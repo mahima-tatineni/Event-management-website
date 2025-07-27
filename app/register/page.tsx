@@ -4,112 +4,85 @@ import type React from "react"
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Mail, Lock, User, Phone, ArrowLeft, Upload, Chrome } from "lucide-react"
+import { ArrowLeft, User, Users, AlertCircle, Eye, EyeOff } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
 export default function RegisterPage() {
-  const [activeTab, setActiveTab] = useState("student")
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    confirmPassword: "",
-    name: "",
-    phone: "",
-    // Student specific
-    rollNo: "",
-    department: "",
-    year: "",
-    branch: "",
-    // Club specific
-    clubName: "",
-    description: "",
-    venue: "",
-    socialLinks: {
-      instagram: "",
-      facebook: "",
-      twitter: "",
-      linkedin: "",
-    },
-  })
+  const [userType, setUserType] = useState<"student" | "club">("student")
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
-  const departments = [
-    "Computer Science Engineering",
-    "Electronics & Communication Engineering",
-    "Electrical & Electronics Engineering",
-    "Mechanical Engineering",
-    "Civil Engineering",
-    "Information Technology",
-    "Chemical Engineering",
+  const [studentData, setStudentData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    rollNo: "",
+    department: "",
+    year: "",
+    phone: "",
+  })
+
+  const [clubData, setClubData] = useState({
+    clubName: "",
+    fullName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    contactPerson: "",
+    phone: "",
+    description: "",
+  })
+
+  const clubs = [
+    // Central Clubs
+    { value: "cie", label: "CIE", fullName: "Center for Innovation & Entrepreneurship", type: "central" },
+    { value: "scope", label: "SCOPE", fullName: "Society of Computer Professionals & Engineers", type: "central" },
+    { value: "literati", label: "Literati", fullName: "Literary & Debating Society", type: "central" },
+    { value: "ewb", label: "EWB", fullName: "Engineers Without Borders", type: "central" },
+    { value: "cam", label: "CAM", fullName: "Creative Arts & Media", type: "central" },
+
+    // Departmental Clubs
+    { value: "squad", label: "SQUAD", fullName: "Student Quality Assurance & Development", type: "departmental" },
+    { value: "code", label: "CODE", fullName: "Computer Organization & Development Engineers", type: "departmental" },
+    { value: "me", label: "ME", fullName: "Mechanical Engineers Club", type: "departmental" },
+    { value: "akriti", label: "AKRITI", fullName: "Architecture & Design Club", type: "departmental" },
+    { value: "robotics", label: "ROBOTICS", fullName: "Robotics & Automation Club", type: "departmental" },
+    { value: "aim", label: "AIM", fullName: "Artificial Intelligence & Machine Learning", type: "departmental" },
   ]
 
+  const departments = ["CSE", "ECE", "EEE", "MECH", "CIVIL", "IT", "CHEM", "BIOTECH"]
   const years = ["1st Year", "2nd Year", "3rd Year", "4th Year"]
 
-  const clubOptions = [
-    // Central Clubs
-    { name: "CIE Club", category: "Central", description: "Center for Innovation and Entrepreneurship" },
-    { name: "SCOPE Club", category: "Central", description: "Student Community of Programming Enthusiasts" },
-    { name: "Literati Club", category: "Central", description: "Literary and Cultural Society" },
-    { name: "EWB Club", category: "Central", description: "Engineers Without Borders" },
-    { name: "CAM Club", category: "Central", description: "Camera and Media Club" },
-    // Departmental Clubs
-    { name: "SQUAD Club", category: "Departmental", description: "Software Quality and Development" },
-    { name: "CODE Club", category: "Departmental", description: "Competitive Programming Club" },
-    { name: "ME Club", category: "Departmental", description: "Mechanical Engineering Club" },
-    { name: "AKRITI Club", category: "Departmental", description: "Design and Creative Arts" },
-    { name: "ROBOTICS Club", category: "Departmental", description: "Robotics and Automation" },
-    { name: "AIM Club", category: "Departmental", description: "Artificial Intelligence and Machine Learning" },
-  ]
-
-  const handleInputChange = (field: string, value: string) => {
-    if (field.startsWith("socialLinks.")) {
-      const socialField = field.split(".")[1]
-      setFormData((prev) => ({
-        ...prev,
-        socialLinks: {
-          ...prev.socialLinks,
-          [socialField]: value,
-        },
-      }))
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [field]: value,
-      }))
-    }
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleStudentSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
     setLoading(true)
 
-    // Validate MLRIT domain
-    if (!formData.email.endsWith("@mlrit.ac.in")) {
-      setError("Please use your MLRIT email address (@mlrit.ac.in)")
+    // Validation
+    if (!studentData.name || !studentData.email || !studentData.password || !studentData.rollNo) {
+      setError("Please fill in all required fields")
       setLoading(false)
       return
     }
 
-    // Validate password match
-    if (formData.password !== formData.confirmPassword) {
+    if (studentData.password !== studentData.confirmPassword) {
       setError("Passwords do not match")
       setLoading(false)
       return
     }
 
-    // Validate password strength
-    if (formData.password.length < 6) {
+    if (studentData.password.length < 6) {
       setError("Password must be at least 6 characters long")
       setLoading(false)
       return
@@ -117,36 +90,24 @@ export default function RegisterPage() {
 
     try {
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      await new Promise((resolve) => setTimeout(resolve, 2000))
 
-      // Mock registration success
-      const userData = {
-        email: formData.email,
-        role: activeTab,
-        name: formData.name,
-        phone: formData.phone,
-        ...(activeTab === "student" && {
-          rollNo: formData.rollNo,
-          department: formData.department,
-          year: formData.year,
-          branch: formData.branch,
-        }),
-        ...(activeTab === "club" && {
-          clubName: formData.clubName,
-          description: formData.description,
-          venue: formData.venue,
-          socialLinks: formData.socialLinks,
-        }),
+      // Store user in database
+      const existingUsers = JSON.parse(localStorage.getItem("users") || "[]")
+      const newUser = {
+        ...studentData,
+        role: "student",
+        id: Date.now(),
+        createdAt: new Date().toISOString(),
       }
+      existingUsers.push(newUser)
+      localStorage.setItem("users", JSON.stringify(existingUsers))
 
-      localStorage.setItem("user", JSON.stringify(userData))
+      // Also store in current session
+      localStorage.setItem("user", JSON.stringify(newUser))
 
-      // Redirect based on role
-      if (activeTab === "student") {
-        router.push("/student/dashboard")
-      } else {
-        router.push("/club/dashboard")
-      }
+      alert("Registration successful! Welcome to CampusHub!")
+      router.push("/student/dashboard")
     } catch (err) {
       setError("Registration failed. Please try again.")
     } finally {
@@ -154,98 +115,144 @@ export default function RegisterPage() {
     }
   }
 
-  const handleGoogleSignup = () => {
+  const handleClubSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
     setError("")
-    alert("Google OAuth integration would be implemented here with @mlrit.ac.in domain restriction")
+    setLoading(true)
+
+    // Validation
+    if (!clubData.clubName || !clubData.email || !clubData.password || !clubData.contactPerson) {
+      setError("Please fill in all required fields")
+      setLoading(false)
+      return
+    }
+
+    if (clubData.password !== clubData.confirmPassword) {
+      setError("Passwords do not match")
+      setLoading(false)
+      return
+    }
+
+    if (clubData.password.length < 6) {
+      setError("Password must be at least 6 characters long")
+      setLoading(false)
+      return
+    }
+
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+
+      // Store club in database
+      const existingUsers = JSON.parse(localStorage.getItem("users") || "[]")
+      const newUser = {
+        ...clubData,
+        role: "club",
+        id: Date.now(),
+        createdAt: new Date().toISOString(),
+      }
+      existingUsers.push(newUser)
+      localStorage.setItem("users", JSON.stringify(existingUsers))
+
+      // Also store in current session
+      localStorage.setItem("user", JSON.stringify(newUser))
+
+      alert("Club registration successful! Welcome to CampusHub!")
+      router.push("/club/dashboard")
+    } catch (err) {
+      setError("Registration failed. Please try again.")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 flex items-center justify-center p-4">
       <div className="w-full max-w-2xl">
-        <div className="mb-6">
-          <Link href="/" className="inline-flex items-center text-purple-600 hover:text-purple-700 transition-colors">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <Link href="/" className="inline-flex items-center text-purple-600 hover:text-purple-700 mb-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
           </Link>
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Join CampusHub</h1>
+          <p className="text-gray-600">Create your account to get started</p>
         </div>
 
-        <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-md">
-          <CardHeader className="text-center pb-6">
-            <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-white font-bold text-2xl">M</span>
-            </div>
-            <CardTitle className="text-2xl font-bold text-gray-800">Join MLRIT Event Hub</CardTitle>
-            <CardDescription className="text-gray-600">Create your account to get started</CardDescription>
+        <Card className="border-0 shadow-2xl bg-white/80 backdrop-blur-md">
+          <CardHeader>
+            <Tabs
+              value={userType}
+              onValueChange={(value) => setUserType(value as "student" | "club")}
+              className="w-full"
+            >
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="student" className="flex items-center">
+                  <User className="w-4 h-4 mr-2" />
+                  Student
+                </TabsTrigger>
+                <TabsTrigger value="club" className="flex items-center">
+                  <Users className="w-4 h-4 mr-2" />
+                  Club
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
           </CardHeader>
 
           <CardContent>
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="student">Student</TabsTrigger>
-                <TabsTrigger value="club">Club</TabsTrigger>
-              </TabsList>
+            {error && (
+              <Alert className="border-red-200 bg-red-50 mb-6">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription className="text-red-700">{error}</AlertDescription>
+              </Alert>
+            )}
 
-              {error && (
-                <Alert className="border-red-200 bg-red-50 mt-4">
-                  <AlertDescription className="text-red-700">{error}</AlertDescription>
-                </Alert>
-              )}
-
-              <div className="mt-6">
-                <Button
-                  onClick={handleGoogleSignup}
-                  variant="outline"
-                  className="w-full h-12 border-gray-200 hover:bg-gray-50 bg-transparent"
-                >
-                  <Chrome className="w-5 h-5 mr-2" />
-                  Continue with Google
-                </Button>
-
-                <div className="relative my-6">
-                  <div className="absolute inset-0 flex items-center">
-                    <span className="w-full border-t border-gray-200" />
-                  </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-white px-2 text-gray-500">Or register with email</span>
-                  </div>
-                </div>
-              </div>
-
-              <TabsContent value="student" className="space-y-4 mt-0">
-                <form onSubmit={handleSubmit} className="space-y-4">
+            <Tabs value={userType} className="w-full">
+              <TabsContent value="student">
+                <form onSubmit={handleStudentSubmit} className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="student-name">Full Name</Label>
-                      <div className="relative">
-                        <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                        <Input
-                          id="student-name"
-                          placeholder="Enter your full name"
-                          value={formData.name}
-                          onChange={(e) => handleInputChange("name", e.target.value)}
-                          className="pl-10 h-12 border-gray-200 focus:border-purple-400"
-                          required
-                        />
-                      </div>
+                      <Label htmlFor="student-name">Full Name *</Label>
+                      <Input
+                        id="student-name"
+                        placeholder="Enter your full name"
+                        value={studentData.name}
+                        onChange={(e) => setStudentData({ ...studentData, name: e.target.value })}
+                        className="h-12 border-gray-200 focus:border-purple-400"
+                        required
+                      />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="student-roll">Roll Number</Label>
+                      <Label htmlFor="student-roll">Roll Number *</Label>
                       <Input
                         id="student-roll"
-                        placeholder="e.g., 21A91A0501"
-                        value={formData.rollNo}
-                        onChange={(e) => handleInputChange("rollNo", e.target.value)}
+                        placeholder="e.g., 21CS001"
+                        value={studentData.rollNo}
+                        onChange={(e) => setStudentData({ ...studentData, rollNo: e.target.value })}
                         className="h-12 border-gray-200 focus:border-purple-400"
                         required
                       />
                     </div>
                   </div>
 
+                  <div className="space-y-2">
+                    <Label htmlFor="student-email">Email Address *</Label>
+                    <Input
+                      id="student-email"
+                      type="email"
+                      placeholder="your.email@mlrit.ac.in"
+                      value={studentData.email}
+                      onChange={(e) => setStudentData({ ...studentData, email: e.target.value })}
+                      className="h-12 border-gray-200 focus:border-purple-400"
+                      required
+                    />
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="student-dept">Department</Label>
-                      <Select onValueChange={(value) => handleInputChange("department", value)} required>
+                      <Label htmlFor="student-department">Department</Label>
+                      <Select onValueChange={(value) => setStudentData({ ...studentData, department: value })}>
                         <SelectTrigger className="h-12 border-gray-200 focus:border-purple-400">
                           <SelectValue placeholder="Select department" />
                         </SelectTrigger>
@@ -261,7 +268,7 @@ export default function RegisterPage() {
 
                     <div className="space-y-2">
                       <Label htmlFor="student-year">Year</Label>
-                      <Select onValueChange={(value) => handleInputChange("year", value)} required>
+                      <Select onValueChange={(value) => setStudentData({ ...studentData, year: value })}>
                         <SelectTrigger className="h-12 border-gray-200 focus:border-purple-400">
                           <SelectValue placeholder="Select year" />
                         </SelectTrigger>
@@ -277,109 +284,115 @@ export default function RegisterPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="student-email">Email Address</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                      <Input
-                        id="student-email"
-                        type="email"
-                        placeholder="your.email@mlrit.ac.in"
-                        value={formData.email}
-                        onChange={(e) => handleInputChange("email", e.target.value)}
-                        className="pl-10 h-12 border-gray-200 focus:border-purple-400"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
                     <Label htmlFor="student-phone">Phone Number</Label>
-                    <div className="relative">
-                      <Phone className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                      <Input
-                        id="student-phone"
-                        type="tel"
-                        placeholder="Enter your phone number"
-                        value={formData.phone}
-                        onChange={(e) => handleInputChange("phone", e.target.value)}
-                        className="pl-10 h-12 border-gray-200 focus:border-purple-400"
-                        required
-                      />
-                    </div>
+                    <Input
+                      id="student-phone"
+                      placeholder="+91 9876543210"
+                      value={studentData.phone}
+                      onChange={(e) => setStudentData({ ...studentData, phone: e.target.value })}
+                      className="h-12 border-gray-200 focus:border-purple-400"
+                    />
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="student-password">Password</Label>
+                      <Label htmlFor="student-password">Password *</Label>
                       <div className="relative">
-                        <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                         <Input
                           id="student-password"
-                          type="password"
+                          type={showPassword ? "text" : "password"}
                           placeholder="Create a password"
-                          value={formData.password}
-                          onChange={(e) => handleInputChange("password", e.target.value)}
-                          className="pl-10 h-12 border-gray-200 focus:border-purple-400"
+                          value={studentData.password}
+                          onChange={(e) => setStudentData({ ...studentData, password: e.target.value })}
+                          className="h-12 border-gray-200 focus:border-purple-400 pr-10"
                           required
                         />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-0 top-0 h-12 px-3 py-2 hover:bg-transparent"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </Button>
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="student-confirm-password">Confirm Password</Label>
+                      <Label htmlFor="student-confirm-password">Confirm Password *</Label>
                       <div className="relative">
-                        <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                         <Input
                           id="student-confirm-password"
-                          type="password"
+                          type={showConfirmPassword ? "text" : "password"}
                           placeholder="Confirm your password"
-                          value={formData.confirmPassword}
-                          onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
-                          className="pl-10 h-12 border-gray-200 focus:border-purple-400"
+                          value={studentData.confirmPassword}
+                          onChange={(e) => setStudentData({ ...studentData, confirmPassword: e.target.value })}
+                          className="h-12 border-gray-200 focus:border-purple-400 pr-10"
                           required
                         />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-0 top-0 h-12 px-3 py-2 hover:bg-transparent"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        >
+                          {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </Button>
                       </div>
                     </div>
                   </div>
 
                   <Button
                     type="submit"
-                    className="w-full h-12 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
                     disabled={loading}
+                    className="w-full h-12 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-lg font-semibold"
                   >
                     {loading ? "Creating Account..." : "Create Student Account"}
                   </Button>
                 </form>
               </TabsContent>
 
-              <TabsContent value="club" className="space-y-4 mt-0">
-                <form onSubmit={handleSubmit} className="space-y-4">
+              <TabsContent value="club">
+                <form onSubmit={handleClubSubmit} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="club-select">Select Club</Label>
-                    <Select onValueChange={(value) => handleInputChange("clubName", value)} required>
+                    <Label htmlFor="club-select">Select Club *</Label>
+                    <Select
+                      onValueChange={(value) => {
+                        const selectedClub = clubs.find((club) => club.value === value)
+                        if (selectedClub) {
+                          setClubData({
+                            ...clubData,
+                            clubName: selectedClub.label,
+                            fullName: selectedClub.fullName,
+                          })
+                        }
+                      }}
+                    >
                       <SelectTrigger className="h-12 border-gray-200 focus:border-purple-400">
                         <SelectValue placeholder="Choose your club" />
                       </SelectTrigger>
                       <SelectContent>
                         <div className="px-2 py-1 text-sm font-semibold text-purple-600">Central Clubs</div>
-                        {clubOptions
-                          .filter((club) => club.category === "Central")
+                        {clubs
+                          .filter((club) => club.type === "central")
                           .map((club) => (
-                            <SelectItem key={club.name} value={club.name}>
+                            <SelectItem key={club.value} value={club.value}>
                               <div>
-                                <div className="font-medium">{club.name}</div>
-                                <div className="text-xs text-gray-500">{club.description}</div>
+                                <div className="font-medium">{club.label}</div>
+                                <div className="text-xs text-gray-500">{club.fullName}</div>
                               </div>
                             </SelectItem>
                           ))}
-                        <div className="px-2 py-1 text-sm font-semibold text-blue-600 mt-2">Departmental Clubs</div>
-                        {clubOptions
-                          .filter((club) => club.category === "Departmental")
+                        <div className="px-2 py-1 text-sm font-semibold text-purple-600 mt-2">Departmental Clubs</div>
+                        {clubs
+                          .filter((club) => club.type === "departmental")
                           .map((club) => (
-                            <SelectItem key={club.name} value={club.name}>
+                            <SelectItem key={club.value} value={club.value}>
                               <div>
-                                <div className="font-medium">{club.name}</div>
-                                <div className="text-xs text-gray-500">{club.description}</div>
+                                <div className="font-medium">{club.label}</div>
+                                <div className="text-xs text-gray-500">{club.fullName}</div>
                               </div>
                             </SelectItem>
                           ))}
@@ -387,156 +400,109 @@ export default function RegisterPage() {
                     </Select>
                   </div>
 
+                  <div className="space-y-2">
+                    <Label htmlFor="club-email">Club Email *</Label>
+                    <Input
+                      id="club-email"
+                      type="email"
+                      placeholder="club@mlrit.ac.in"
+                      value={clubData.email}
+                      onChange={(e) => setClubData({ ...clubData, email: e.target.value })}
+                      className="h-12 border-gray-200 focus:border-purple-400"
+                      required
+                    />
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="club-contact-name">Contact Person Name</Label>
-                      <div className="relative">
-                        <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                        <Input
-                          id="club-contact-name"
-                          placeholder="Contact person name"
-                          value={formData.name}
-                          onChange={(e) => handleInputChange("name", e.target.value)}
-                          className="pl-10 h-12 border-gray-200 focus:border-purple-400"
-                          required
-                        />
-                      </div>
+                      <Label htmlFor="contact-person">Contact Person *</Label>
+                      <Input
+                        id="contact-person"
+                        placeholder="Faculty coordinator name"
+                        value={clubData.contactPerson}
+                        onChange={(e) => setClubData({ ...clubData, contactPerson: e.target.value })}
+                        className="h-12 border-gray-200 focus:border-purple-400"
+                        required
+                      />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="club-venue">Workspace/Venue</Label>
+                      <Label htmlFor="club-phone">Contact Phone</Label>
                       <Input
-                        id="club-venue"
-                        placeholder="e.g., Room 301, CSE Block"
-                        value={formData.venue}
-                        onChange={(e) => handleInputChange("venue", e.target.value)}
+                        id="club-phone"
+                        placeholder="+91 9876543210"
+                        value={clubData.phone}
+                        onChange={(e) => setClubData({ ...clubData, phone: e.target.value })}
                         className="h-12 border-gray-200 focus:border-purple-400"
-                        required
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="club-description">Club Description</Label>
-                    <Textarea
+                    <Input
                       id="club-description"
-                      placeholder="Describe your club's mission and activities"
-                      value={formData.description}
-                      onChange={(e) => handleInputChange("description", e.target.value)}
-                      className="min-h-[100px] border-gray-200 focus:border-purple-400"
-                      required
+                      placeholder="Brief description of your club"
+                      value={clubData.description}
+                      onChange={(e) => setClubData({ ...clubData, description: e.target.value })}
+                      className="h-12 border-gray-200 focus:border-purple-400"
                     />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="club-email">Official Email</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                      <Input
-                        id="club-email"
-                        type="email"
-                        placeholder="club.email@mlrit.ac.in"
-                        value={formData.email}
-                        onChange={(e) => handleInputChange("email", e.target.value)}
-                        className="pl-10 h-12 border-gray-200 focus:border-purple-400"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="club-phone">Contact Number</Label>
-                    <div className="relative">
-                      <Phone className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                      <Input
-                        id="club-phone"
-                        type="tel"
-                        placeholder="Contact phone number"
-                        value={formData.phone}
-                        onChange={(e) => handleInputChange("phone", e.target.value)}
-                        className="pl-10 h-12 border-gray-200 focus:border-purple-400"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Social Media Links (Optional)</Label>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Input
-                        placeholder="Instagram URL"
-                        value={formData.socialLinks.instagram}
-                        onChange={(e) => handleInputChange("socialLinks.instagram", e.target.value)}
-                        className="h-12 border-gray-200 focus:border-purple-400"
-                      />
-                      <Input
-                        placeholder="Facebook URL"
-                        value={formData.socialLinks.facebook}
-                        onChange={(e) => handleInputChange("socialLinks.facebook", e.target.value)}
-                        className="h-12 border-gray-200 focus:border-purple-400"
-                      />
-                      <Input
-                        placeholder="Twitter URL"
-                        value={formData.socialLinks.twitter}
-                        onChange={(e) => handleInputChange("socialLinks.twitter", e.target.value)}
-                        className="h-12 border-gray-200 focus:border-purple-400"
-                      />
-                      <Input
-                        placeholder="LinkedIn URL"
-                        value={formData.socialLinks.linkedin}
-                        onChange={(e) => handleInputChange("socialLinks.linkedin", e.target.value)}
-                        className="h-12 border-gray-200 focus:border-purple-400"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="club-logo">Club Logo</Label>
-                    <div className="border-2 border-dashed border-gray-200 rounded-lg p-6 text-center hover:border-purple-300 transition-colors">
-                      <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                      <p className="text-sm text-gray-600">Click to upload or drag and drop</p>
-                      <p className="text-xs text-gray-500">PNG, JPG up to 2MB</p>
-                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="club-password">Password</Label>
+                      <Label htmlFor="club-password">Password *</Label>
                       <div className="relative">
-                        <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                         <Input
                           id="club-password"
-                          type="password"
+                          type={showPassword ? "text" : "password"}
                           placeholder="Create a password"
-                          value={formData.password}
-                          onChange={(e) => handleInputChange("password", e.target.value)}
-                          className="pl-10 h-12 border-gray-200 focus:border-purple-400"
+                          value={clubData.password}
+                          onChange={(e) => setClubData({ ...clubData, password: e.target.value })}
+                          className="h-12 border-gray-200 focus:border-purple-400 pr-10"
                           required
                         />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-0 top-0 h-12 px-3 py-2 hover:bg-transparent"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </Button>
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="club-confirm-password">Confirm Password</Label>
+                      <Label htmlFor="club-confirm-password">Confirm Password *</Label>
                       <div className="relative">
-                        <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                         <Input
                           id="club-confirm-password"
-                          type="password"
+                          type={showConfirmPassword ? "text" : "password"}
                           placeholder="Confirm your password"
-                          value={formData.confirmPassword}
-                          onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
-                          className="pl-10 h-12 border-gray-200 focus:border-purple-400"
+                          value={clubData.confirmPassword}
+                          onChange={(e) => setClubData({ ...clubData, confirmPassword: e.target.value })}
+                          className="h-12 border-gray-200 focus:border-purple-400 pr-10"
                           required
                         />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-0 top-0 h-12 px-3 py-2 hover:bg-transparent"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        >
+                          {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </Button>
                       </div>
                     </div>
                   </div>
 
                   <Button
                     type="submit"
-                    className="w-full h-12 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
                     disabled={loading}
+                    className="w-full h-12 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-lg font-semibold"
                   >
                     {loading ? "Creating Account..." : "Create Club Account"}
                   </Button>
@@ -544,11 +510,11 @@ export default function RegisterPage() {
               </TabsContent>
             </Tabs>
 
-            <div className="text-center mt-6">
-              <p className="text-sm text-gray-600">
+            <div className="mt-6 text-center">
+              <p className="text-gray-600">
                 Already have an account?{" "}
-                <Link href="/login" className="text-purple-600 hover:text-purple-700 font-medium">
-                  Sign in
+                <Link href="/login" className="text-purple-600 hover:text-purple-700 font-semibold">
+                  Sign in here
                 </Link>
               </p>
             </div>

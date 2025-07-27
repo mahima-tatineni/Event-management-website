@@ -1,119 +1,144 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { NotificationBell } from "@/components/ui/notification-bell"
+import { useNotifications } from "@/components/providers/notification-provider"
 import {
   Calendar,
   MapPin,
   Clock,
   Users,
-  Star,
-  Bell,
-  ShoppingCart,
-  History,
-  User,
+  Download,
+  Eye,
+  Ticket,
+  CheckCircle,
+  XCircle,
+  Settings,
   LogOut,
-  Home,
   Search,
-  Filter,
+  Plus,
+  CreditCard,
+  QrCode,
+  Share2,
 } from "lucide-react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 
 export default function StudentDashboard() {
   const [user, setUser] = useState<any>(null)
+  const [registrations, setRegistrations] = useState<any[]>([])
+  const [tickets, setTickets] = useState<any[]>([])
   const [searchTerm, setSearchTerm] = useState("")
-  const [cartItems, setCartItems] = useState<any[]>([])
+  const [statusFilter, setStatusFilter] = useState("all")
   const router = useRouter()
+  const { addNotification } = useNotifications()
 
   useEffect(() => {
     const userData = localStorage.getItem("user")
     if (userData) {
-      setUser(JSON.parse(userData))
+      const parsedUser = JSON.parse(userData)
+      if (parsedUser.role !== "student") {
+        router.push("/login")
+        return
+      }
+      setUser(parsedUser)
     } else {
       router.push("/login")
     }
+
+    // Load registrations and tickets
+    const storedRegistrations = localStorage.getItem("registrations")
+    const storedTickets = localStorage.getItem("tickets")
+
+    if (storedRegistrations) {
+      setRegistrations(JSON.parse(storedRegistrations))
+    }
+
+    if (storedTickets) {
+      setTickets(JSON.parse(storedTickets))
+    }
   }, [router])
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "confirmed":
+        return (
+          <Badge className="bg-green-100 text-green-800">
+            <CheckCircle className="w-3 h-3 mr-1" />
+            Confirmed
+          </Badge>
+        )
+      case "pending":
+        return (
+          <Badge className="bg-yellow-100 text-yellow-800">
+            <Clock className="w-3 h-3 mr-1" />
+            Pending Payment
+          </Badge>
+        )
+      case "cancelled":
+        return (
+          <Badge className="bg-red-100 text-red-800">
+            <XCircle className="w-3 h-3 mr-1" />
+            Cancelled
+          </Badge>
+        )
+      default:
+        return <Badge variant="secondary">{status}</Badge>
+    }
+  }
+
+  const filteredRegistrations = registrations.filter((registration) => {
+    const matchesSearch =
+      registration.eventTitle?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      registration.participantName?.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesFilter = statusFilter === "all" || registration.status === statusFilter
+    return matchesSearch && matchesFilter
+  })
 
   const handleLogout = () => {
     localStorage.removeItem("user")
-    router.push("/")
+    router.push("/login")
   }
 
-  const upcomingEvents = [
-    {
-      id: 1,
-      title: "Tech Symposium 2024",
-      club: "Computer Science Club",
-      date: "2024-02-15",
-      time: "10:00 AM",
-      venue: "Main Auditorium",
-      price: 150,
-      image: "/placeholder.svg?height=200&width=300",
-      rating: 4.8,
-      registrations: 245,
-      maxCapacity: 500,
-    },
-    {
-      id: 2,
-      title: "Cultural Fest - Rangoli",
-      club: "Cultural Club",
-      date: "2024-02-20",
-      time: "2:00 PM",
-      venue: "Open Ground",
-      price: 100,
-      image: "/placeholder.svg?height=200&width=300",
-      rating: 4.6,
-      registrations: 180,
-      maxCapacity: 300,
-    },
-    {
-      id: 3,
-      title: "Entrepreneurship Workshop",
-      club: "E-Cell",
-      date: "2024-02-25",
-      time: "11:00 AM",
-      venue: "Seminar Hall",
-      price: 200,
-      image: "/placeholder.svg?height=200&width=300",
-      rating: 4.9,
-      registrations: 95,
-      maxCapacity: 150,
-    },
-  ]
+  const downloadTicket = (ticket: any) => {
+    // Create a simple ticket download
+    const ticketContent = `
+CAMPUSHUB EVENT TICKET
+======================
+Event: ${ticket.eventTitle}
+Participant: ${ticket.participantName}
+Date: ${new Date(ticket.eventDate).toLocaleDateString()}
+Time: ${ticket.eventTime}
+Venue: ${ticket.venue}
+Ticket ID: ${ticket.id}
+Transaction ID: ${ticket.transactionId}
+Amount Paid: ₹${ticket.amount}
 
-  const registeredEvents = [
-    {
-      id: 4,
-      title: "Hackathon 2024",
-      club: "Coding Club",
-      date: "2024-01-28",
-      status: "completed",
-      rating: 5,
-      feedback: "Amazing event with great learning opportunities!",
-    },
-    {
-      id: 5,
-      title: "Dance Competition",
-      club: "Dance Club",
-      date: "2024-01-25",
-      status: "completed",
-      rating: 4,
-      feedback: "Well organized event, enjoyed participating!",
-    },
-  ]
+Please present this ticket at the event venue.
+    `
 
-  const addToCart = (event: any) => {
-    setCartItems((prev) => [...prev, event])
-  }
-
-  const removeFromCart = (eventId: number) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== eventId))
+    const blob = new Blob([ticketContent], { type: "text/plain" })
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `ticket-${ticket.id}.txt`
+    a.click()
+    window.URL.revokeObjectURL(url)
   }
 
   if (!user) {
@@ -127,314 +152,305 @@ export default function StudentDashboard() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">M</span>
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                <Users className="w-6 h-6 text-white" />
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-800">Student Dashboard</h1>
-                <p className="text-sm text-gray-600">Welcome back, {user.name}</p>
+                <p className="text-sm text-gray-600">Welcome back, {user.name}!</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <Button variant="outline" size="sm" className="relative bg-transparent">
-                <Bell className="w-4 h-4" />
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full text-xs"></span>
-              </Button>
-              <Button variant="outline" size="sm" className="relative bg-transparent">
-                <ShoppingCart className="w-4 h-4" />
-                {cartItems.length > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-purple-500 text-white rounded-full text-xs flex items-center justify-center">
-                    {cartItems.length}
-                  </span>
-                )}
-              </Button>
-              <Avatar className="w-8 h-8">
-                <AvatarImage src="/placeholder.svg?height=32&width=32" />
-                <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
-              </Avatar>
-              <Button variant="outline" size="sm" onClick={handleLogout}>
-                <LogOut className="w-4 h-4" />
-              </Button>
+              <NotificationBell />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src="/placeholder-user.jpg" alt={user.name} />
+                      <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{user.name}</p>
+                      <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
       </header>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
-            <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm">
-              <CardHeader className="text-center">
-                <Avatar className="w-20 h-20 mx-auto mb-4">
-                  <AvatarImage src="/placeholder.svg?height=80&width=80" />
-                  <AvatarFallback className="text-2xl">{user.name?.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <CardTitle className="text-lg">{user.name}</CardTitle>
-                <CardDescription>{user.rollNo}</CardDescription>
-                <Badge variant="secondary" className="mt-2">
-                  {user.department}
-                </Badge>
-              </CardHeader>
-              <CardContent>
-                <nav className="space-y-2">
-                  <Link href="/student/dashboard">
-                    <Button variant="ghost" className="w-full justify-start bg-purple-50 text-purple-700">
-                      <Home className="w-4 h-4 mr-2" />
-                      Dashboard
-                    </Button>
-                  </Link>
-                  <Link href="/student/profile">
-                    <Button variant="ghost" className="w-full justify-start">
-                      <User className="w-4 h-4 mr-2" />
-                      Profile
-                    </Button>
-                  </Link>
-                  <Link href="/student/calendar">
-                    <Button variant="ghost" className="w-full justify-start">
-                      <Calendar className="w-4 h-4 mr-2" />
-                      Calendar
-                    </Button>
-                  </Link>
-                  <Link href="/student/history">
-                    <Button variant="ghost" className="w-full justify-start">
-                      <History className="w-4 h-4 mr-2" />
-                      Event History
-                    </Button>
-                  </Link>
-                </nav>
-              </CardContent>
-            </Card>
-          </div>
+        {/* Quick Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Total Events</p>
+                  <p className="text-3xl font-bold text-gray-900">{registrations.length}</p>
+                </div>
+                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                  <Calendar className="w-6 h-6 text-blue-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-          {/* Main Content */}
-          <div className="lg:col-span-3">
-            <Tabs defaultValue="events" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="events">Upcoming Events</TabsTrigger>
-                <TabsTrigger value="registered">My Events</TabsTrigger>
-                <TabsTrigger value="cart">Cart ({cartItems.length})</TabsTrigger>
-                <TabsTrigger value="feedback">Feedback</TabsTrigger>
+          <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Confirmed</p>
+                  <p className="text-3xl font-bold text-green-600">
+                    {registrations.filter((r) => r.status === "confirmed").length}
+                  </p>
+                </div>
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                  <CheckCircle className="w-6 h-6 text-green-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">My Tickets</p>
+                  <p className="text-3xl font-bold text-purple-600">{tickets.length}</p>
+                </div>
+                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                  <Ticket className="w-6 h-6 text-purple-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Main Content */}
+        <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>My Events & Tickets</CardTitle>
+                <CardDescription>Manage your event registrations and tickets</CardDescription>
+              </div>
+              <Link href="/">
+                <Button>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Browse Events
+                </Button>
+              </Link>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="events" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="events">My Events ({registrations.length})</TabsTrigger>
+                <TabsTrigger value="tickets">My Tickets ({tickets.length})</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="events" className="space-y-6">
+              <TabsContent value="events" className="mt-6">
                 {/* Search and Filter */}
-                <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm">
-                  <CardContent className="p-6">
-                    <div className="flex flex-col md:flex-row gap-4">
-                      <div className="flex-1 relative">
-                        <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                        <Input
-                          placeholder="Search events..."
-                          value={searchTerm}
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                          className="pl-10 h-12 border-purple-200 focus:border-purple-400"
-                        />
-                      </div>
-                      <Button variant="outline" className="h-12 px-6 border-purple-200 text-purple-700 bg-transparent">
-                        <Filter className="w-4 h-4 mr-2" />
-                        Filter
-                      </Button>
+                <div className="flex flex-col md:flex-row gap-4 mb-6">
+                  <div className="flex-1">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                      <Input
+                        placeholder="Search events..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-10"
+                      />
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger className="w-full md:w-48">
+                      <SelectValue placeholder="Filter by status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Status</SelectItem>
+                      <SelectItem value="confirmed">Confirmed</SelectItem>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="cancelled">Cancelled</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-                {/* Events Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {upcomingEvents
-                    .filter(
-                      (event) =>
-                        event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        event.club.toLowerCase().includes(searchTerm.toLowerCase()),
-                    )
-                    .map((event) => (
-                      <Card
-                        key={event.id}
-                        className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/70 backdrop-blur-sm overflow-hidden"
-                      >
-                        <div className="relative">
-                          <img
-                            src={event.image || "/placeholder.svg"}
-                            alt={event.title}
-                            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
-                          <div className="absolute top-4 right-4">
-                            <Badge className="bg-white/90 text-gray-800">₹{event.price}</Badge>
-                          </div>
-                          <div className="absolute bottom-4 left-4">
-                            <Badge variant="secondary" className="bg-purple-500/90 text-white">
-                              {event.club}
-                            </Badge>
-                          </div>
-                        </div>
-
-                        <CardHeader className="pb-3">
-                          <CardTitle className="text-lg group-hover:text-purple-600 transition-colors">
-                            {event.title}
-                          </CardTitle>
-                          <div className="flex items-center text-sm text-gray-600 space-x-4">
-                            <div className="flex items-center">
-                              <Calendar className="w-4 h-4 mr-1" />
-                              {new Date(event.date).toLocaleDateString()}
+                {/* Events List */}
+                <div className="space-y-4">
+                  {filteredRegistrations.length === 0 ? (
+                    <div className="text-center py-12">
+                      <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">No events found</h3>
+                      <p className="text-gray-600 mb-4">You haven't registered for any events yet.</p>
+                      <Link href="/">
+                        <Button>Browse Events</Button>
+                      </Link>
+                    </div>
+                  ) : (
+                    filteredRegistrations.map((registration) => (
+                      <Card key={registration.id} className="border border-gray-200">
+                        <CardContent className="p-6">
+                          <div className="flex items-start justify-between">
+                            <div className="flex items-start space-x-4">
+                              <img
+                                src="/placeholder.svg?height=80&width=80"
+                                alt={registration.eventTitle}
+                                className="w-20 h-20 object-cover rounded-lg"
+                              />
+                              <div className="flex-1">
+                                <div className="flex items-center space-x-2 mb-2">
+                                  <h3 className="text-lg font-semibold">{registration.eventTitle}</h3>
+                                  {getStatusBadge(registration.status)}
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600 mb-3">
+                                  <div className="flex items-center">
+                                    <Calendar className="w-4 h-4 mr-2" />
+                                    {new Date(registration.eventDate).toLocaleDateString()}
+                                  </div>
+                                  <div className="flex items-center">
+                                    <Clock className="w-4 h-4 mr-2" />
+                                    {registration.eventTime}
+                                  </div>
+                                  <div className="flex items-center">
+                                    <MapPin className="w-4 h-4 mr-2" />
+                                    {registration.venue}
+                                  </div>
+                                </div>
+                                <div className="text-sm">
+                                  <p>
+                                    <strong>Participant:</strong> {registration.participantName}
+                                  </p>
+                                  <p>
+                                    <strong>Registration Date:</strong>{" "}
+                                    {new Date(registration.registrationDate).toLocaleDateString()}
+                                  </p>
+                                  {registration.transactionId && (
+                                    <p>
+                                      <strong>Transaction ID:</strong> {registration.transactionId}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
                             </div>
-                            <div className="flex items-center">
-                              <Clock className="w-4 h-4 mr-1" />
-                              {event.time}
+                            <div className="flex flex-col space-y-2">
+                              {registration.status === "pending" && (
+                                <Link
+                                  href={`/student/events/${registration.eventId}/payment?registrationId=${registration.id}`}
+                                >
+                                  <Button size="sm" className="w-full">
+                                    <CreditCard className="w-4 h-4 mr-2" />
+                                    Complete Payment
+                                  </Button>
+                                </Link>
+                              )}
+                              {registration.status === "confirmed" && (
+                                <Button size="sm" variant="outline" className="w-full bg-transparent">
+                                  <Eye className="w-4 h-4 mr-2" />
+                                  View Details
+                                </Button>
+                              )}
                             </div>
-                          </div>
-                        </CardHeader>
-
-                        <CardContent className="pt-0">
-                          <div className="flex items-center text-sm text-gray-600 mb-4">
-                            <MapPin className="w-4 h-4 mr-1" />
-                            {event.venue}
-                          </div>
-
-                          <div className="flex items-center justify-between mb-4">
-                            <div className="flex items-center text-sm">
-                              <Users className="w-4 h-4 mr-1 text-green-500" />
-                              <span>
-                                {event.registrations}/{event.maxCapacity}
-                              </span>
-                            </div>
-                            <div className="flex items-center text-sm">
-                              <Star className="w-4 h-4 mr-1 text-yellow-500 fill-current" />
-                              <span>{event.rating}</span>
-                            </div>
-                          </div>
-
-                          <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
-                            <div
-                              className="bg-gradient-to-r from-green-400 to-green-500 h-2 rounded-full"
-                              style={{ width: `${(event.registrations / event.maxCapacity) * 100}%` }}
-                            ></div>
-                          </div>
-
-                          <div className="flex gap-2">
-                            <Button
-                              className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
-                              onClick={() => addToCart(event)}
-                            >
-                              Add to Cart
-                            </Button>
-                            <Button variant="outline" size="sm">
-                              View Details
-                            </Button>
                           </div>
                         </CardContent>
                       </Card>
-                    ))}
+                    ))
+                  )}
                 </div>
               </TabsContent>
 
-              <TabsContent value="registered" className="space-y-6">
-                <div className="grid grid-cols-1 gap-6">
-                  {registeredEvents.map((event) => (
-                    <Card key={event.id} className="border-0 shadow-lg bg-white/70 backdrop-blur-sm">
-                      <CardContent className="p-6">
-                        <div className="flex items-center justify-between mb-4">
-                          <div>
-                            <h3 className="text-lg font-semibold">{event.title}</h3>
-                            <p className="text-gray-600">{event.club}</p>
-                          </div>
-                          <Badge variant={event.status === "completed" ? "secondary" : "default"}>{event.status}</Badge>
-                        </div>
-                        <div className="flex items-center text-sm text-gray-600 mb-4">
-                          <Calendar className="w-4 h-4 mr-1" />
-                          {new Date(event.date).toLocaleDateString()}
-                        </div>
-                        {event.status === "completed" && (
-                          <div className="border-t pt-4">
-                            <div className="flex items-center mb-2">
-                              <span className="text-sm font-medium mr-2">Your Rating:</span>
-                              <div className="flex">
-                                {[...Array(5)].map((_, i) => (
-                                  <Star
-                                    key={i}
-                                    className={`w-4 h-4 ${
-                                      i < event.rating ? "text-yellow-500 fill-current" : "text-gray-300"
-                                    }`}
-                                  />
-                                ))}
-                              </div>
-                            </div>
-                            <p className="text-sm text-gray-600">{event.feedback}</p>
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </TabsContent>
-
-              <TabsContent value="cart" className="space-y-6">
-                {cartItems.length === 0 ? (
-                  <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm">
-                    <CardContent className="p-12 text-center">
-                      <ShoppingCart className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                      <h3 className="text-xl font-semibold text-gray-600 mb-2">Your cart is empty</h3>
-                      <p className="text-gray-500">Add some events to get started!</p>
-                    </CardContent>
-                  </Card>
-                ) : (
-                  <div className="space-y-4">
-                    {cartItems.map((item) => (
-                      <Card key={item.id} className="border-0 shadow-lg bg-white/70 backdrop-blur-sm">
+              <TabsContent value="tickets" className="mt-6">
+                <div className="space-y-4">
+                  {tickets.length === 0 ? (
+                    <div className="text-center py-12">
+                      <Ticket className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">No tickets yet</h3>
+                      <p className="text-gray-600 mb-4">Your confirmed event tickets will appear here.</p>
+                      <Link href="/">
+                        <Button>Browse Events</Button>
+                      </Link>
+                    </div>
+                  ) : (
+                    tickets.map((ticket) => (
+                      <Card key={ticket.id} className="border border-green-200 bg-green-50/50">
                         <CardContent className="p-6">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-4">
-                              <img
-                                src={item.image || "/placeholder.svg"}
-                                alt={item.title}
-                                className="w-16 h-16 object-cover rounded-lg"
-                              />
-                              <div>
-                                <h3 className="font-semibold">{item.title}</h3>
-                                <p className="text-sm text-gray-600">{item.club}</p>
-                                <p className="text-sm text-gray-600">{new Date(item.date).toLocaleDateString()}</p>
+                          <div className="flex items-start justify-between">
+                            <div className="flex items-start space-x-4">
+                              <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-blue-500 rounded-lg flex items-center justify-center">
+                                <Ticket className="w-8 h-8 text-white" />
+                              </div>
+                              <div className="flex-1">
+                                <h3 className="text-lg font-semibold mb-2">{ticket.eventTitle}</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600 mb-3">
+                                  <div className="flex items-center">
+                                    <Calendar className="w-4 h-4 mr-2" />
+                                    {new Date(ticket.eventDate).toLocaleDateString()}
+                                  </div>
+                                  <div className="flex items-center">
+                                    <Clock className="w-4 h-4 mr-2" />
+                                    {ticket.eventTime}
+                                  </div>
+                                  <div className="flex items-center">
+                                    <MapPin className="w-4 h-4 mr-2" />
+                                    {ticket.venue}
+                                  </div>
+                                </div>
+                                <div className="text-sm">
+                                  <p>
+                                    <strong>Ticket ID:</strong> {ticket.id}
+                                  </p>
+                                  <p>
+                                    <strong>Participant:</strong> {ticket.participantName}
+                                  </p>
+                                  <p>
+                                    <strong>Amount Paid:</strong> ₹{ticket.amount}
+                                  </p>
+                                  <p>
+                                    <strong>Transaction ID:</strong> {ticket.transactionId}
+                                  </p>
+                                </div>
                               </div>
                             </div>
-                            <div className="flex items-center space-x-4">
-                              <span className="text-lg font-semibold">₹{item.price}</span>
-                              <Button variant="outline" size="sm" onClick={() => removeFromCart(item.id)}>
-                                Remove
+                            <div className="flex flex-col space-y-2">
+                              <Button size="sm" onClick={() => downloadTicket(ticket)}>
+                                <Download className="w-4 h-4 mr-2" />
+                                Download
+                              </Button>
+                              <Button size="sm" variant="outline">
+                                <QrCode className="w-4 h-4 mr-2" />
+                                QR Code
+                              </Button>
+                              <Button size="sm" variant="outline">
+                                <Share2 className="w-4 h-4 mr-2" />
+                                Share
                               </Button>
                             </div>
                           </div>
                         </CardContent>
                       </Card>
-                    ))}
-                    <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm">
-                      <CardContent className="p-6">
-                        <div className="flex items-center justify-between mb-4">
-                          <span className="text-lg font-semibold">Total:</span>
-                          <span className="text-2xl font-bold text-purple-600">
-                            ₹{cartItems.reduce((total, item) => total + item.price, 0)}
-                          </span>
-                        </div>
-                        <Button className="w-full h-12 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
-                          Proceed to Payment
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  </div>
-                )}
-              </TabsContent>
-
-              <TabsContent value="feedback" className="space-y-6">
-                <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm">
-                  <CardHeader>
-                    <CardTitle>Pending Feedback</CardTitle>
-                    <CardDescription>Please provide feedback for events you've attended</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-600">No pending feedback at the moment.</p>
-                  </CardContent>
-                </Card>
+                    ))
+                  )}
+                </div>
               </TabsContent>
             </Tabs>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
