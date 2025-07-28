@@ -24,9 +24,6 @@ import {
   Download,
   Eye,
   RefreshCw,
-  Phone,
-  Mail,
-  FileText,
   ArrowLeft,
   TrendingUp,
   AlertCircle,
@@ -564,15 +561,11 @@ export default function AdminRegistrations() {
                                       </p>
                                     </div>
                                   </div>
-                                </div>
-
-                                {/* Event Info */}
-                                <div>
-                                  <h4 className="font-semibold mb-2">Event Information</h4>
-                                  <div className="grid grid-cols-2 gap-4 text-sm">
-                                    <div>
+                                  <div>
+                                    <h4 className="font-semibold mb-2">Event Information</h4>
+                                    <div className="space-y-2 text-sm">
                                       <p>
-                                        <strong>Event:</strong> {selectedRegistration.eventTitle}
+                                        <strong>Title:</strong> {selectedRegistration.eventTitle}
                                       </p>
                                       <p>
                                         <strong>Date:</strong>{" "}
@@ -582,81 +575,37 @@ export default function AdminRegistrations() {
                                         <strong>Venue:</strong> {selectedRegistration.eventVenue}
                                       </p>
                                     </div>
-                                    <div>
-                                      <p>
-                                        <strong>Special Requirements:</strong>{" "}
-                                        {selectedRegistration.specialRequirements}
-                                      </p>
-                                      <p>
-                                        <strong>Attendance:</strong>{" "}
-                                        {getAttendanceBadge(selectedRegistration.attendanceStatus)}
-                                      </p>
-                                    </div>
                                   </div>
-                                </div>
-
-                                {/* Team Members */}
-                                {selectedRegistration.teamMembers && selectedRegistration.teamMembers.length > 0 && (
                                   <div>
                                     <h4 className="font-semibold mb-2">Team Members</h4>
-                                    <div className="space-y-2">
-                                      {selectedRegistration.teamMembers.map((member: any, index: number) => (
-                                        <div key={index} className="p-3 bg-gray-50 rounded-lg text-sm">
-                                          <p>
-                                            <strong>Name:</strong> {member.name}
-                                          </p>
-                                          <p>
-                                            <strong>Roll Number:</strong> {member.rollNumber}
-                                          </p>
-                                          <p>
-                                            <strong>Branch:</strong> {member.branch}
-                                          </p>
-                                        </div>
+                                    <div className="space-y-2 text-sm">
+                                      {selectedRegistration.teamMembers.map((member, index) => (
+                                        <p key={index}>
+                                          {member.name} ({member.rollNumber})
+                                        </p>
                                       ))}
                                     </div>
                                   </div>
-                                )}
-
-                                {/* Emergency Contact */}
-                                <div>
-                                  <h4 className="font-semibold mb-2">Emergency Contact</h4>
-                                  <div className="text-sm">
-                                    <p>
-                                      <strong>Name:</strong> {selectedRegistration.emergencyContact.name}
-                                    </p>
-                                    <p>
-                                      <strong>Phone:</strong> {selectedRegistration.emergencyContact.phone}
-                                    </p>
-                                    <p>
-                                      <strong>Relation:</strong> {selectedRegistration.emergencyContact.relation}
-                                    </p>
+                                  <div>
+                                    <h4 className="font-semibold mb-2">Special Requirements</h4>
+                                    <div className="space-y-2 text-sm">
+                                      <p>{selectedRegistration.specialRequirements}</p>
+                                    </div>
                                   </div>
-                                </div>
-
-                                {/* Actions */}
-                                <div className="flex gap-2 pt-4 border-t">
-                                  <Button variant="outline" size="sm">
-                                    <Mail className="w-4 h-4 mr-1" />
-                                    Send Email
-                                  </Button>
-                                  <Button variant="outline" size="sm">
-                                    <Phone className="w-4 h-4 mr-1" />
-                                    Call Student
-                                  </Button>
-                                  <Button variant="outline" size="sm">
-                                    <FileText className="w-4 h-4 mr-1" />
-                                    Generate Certificate
-                                  </Button>
-                                  {selectedRegistration.attendanceStatus === "not_marked" && (
-                                    <>
-                                      <Button variant="outline" size="sm" className="text-green-600 bg-transparent">
-                                        Mark Present
-                                      </Button>
-                                      <Button variant="outline" size="sm" className="text-red-600 bg-transparent">
-                                        Mark Absent
-                                      </Button>
-                                    </>
-                                  )}
+                                  <div>
+                                    <h4 className="font-semibold mb-2">Emergency Contact</h4>
+                                    <div className="space-y-2 text-sm">
+                                      <p>
+                                        <strong>Name:</strong> {selectedRegistration.emergencyContact.name}
+                                      </p>
+                                      <p>
+                                        <strong>Phone:</strong> {selectedRegistration.emergencyContact.phone}
+                                      </p>
+                                      <p>
+                                        <strong>Relation:</strong> {selectedRegistration.emergencyContact.relation}
+                                      </p>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             )}

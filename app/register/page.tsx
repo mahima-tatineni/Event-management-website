@@ -94,6 +94,21 @@ export default function RegisterPage() {
 
       // Store user in database
       const existingUsers = JSON.parse(localStorage.getItem("users") || "[]")
+
+      // Check if user with same email or roll number already exists
+      const userExists = existingUsers.some(
+        (user: any) =>
+          (user.email === studentData.email && user.role === "student") ||
+          (user.rollNo === studentData.rollNo && user.role === "student"),
+      )
+
+      if (userExists) {
+        setError("User with this email or roll number already exists. Please log in.")
+        setLoading(false)
+        router.push("/login") // Redirect to login page
+        return
+      }
+
       const newUser = {
         ...studentData,
         role: "student",

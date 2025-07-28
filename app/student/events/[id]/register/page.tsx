@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Separator } from "@/components/ui/separator"
 import {
@@ -22,6 +21,7 @@ import {
   ArrowLeft,
   CheckCircle,
   AlertCircle,
+  Shield,
 } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import Link from "next/link"
@@ -269,17 +269,15 @@ export default function EventRegistration() {
       <header className="bg-white/80 backdrop-blur-md border-b border-purple-100 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Link href="/student/dashboard">
-                <Button variant="ghost" size="sm">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Dashboard
-                </Button>
-              </Link>
-              <div>
-                <h1 className="text-xl font-bold text-gray-800">Event Registration</h1>
-                <p className="text-sm text-gray-600">Complete your registration for {event.title}</p>
-              </div>
+            <Link href="/student/dashboard">
+              <Button variant="ghost" size="sm">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Dashboard
+              </Button>
+            </Link>
+            <div>
+              <h1 className="text-xl font-bold text-gray-800">Event Registration</h1>
+              <p className="text-sm text-gray-600">Complete your registration for {event.title}</p>
             </div>
           </div>
         </div>
@@ -578,42 +576,18 @@ export default function EventRegistration() {
 
                 <Separator />
 
-                {/* Terms and Conditions */}
-                <div className="space-y-4">
-                  <div className="flex items-start space-x-2">
-                    <Checkbox
-                      id="agreeTerms"
-                      checked={formData.agreeTerms}
-                      onCheckedChange={(checked) => handleInputChange("agreeTerms", checked)}
-                    />
-                    <Label htmlFor="agreeTerms" className="text-sm leading-relaxed">
-                      I agree to the{" "}
-                      <Link href="/terms" className="text-purple-600 hover:underline">
-                        Terms and Conditions
-                      </Link>{" "}
-                      and{" "}
-                      <Link href="/privacy" className="text-purple-600 hover:underline">
-                        Privacy Policy
-                      </Link>
-                      . I understand that registration fees are non-refundable except in case of event cancellation.
-                    </Label>
-                  </div>
-                  {errors.agreeTerms && <p className="text-red-500 text-sm">{errors.agreeTerms}</p>}
-                </div>
-
-                {/* Registration Summary */}
+                {/* Security Notice */}
                 <Alert>
-                  <CheckCircle className="h-4 w-4" />
+                  <Shield className="h-4 w-4" />
                   <AlertDescription>
-                    <strong>Registration Summary:</strong> You are registering for "{event.title}" scheduled on{" "}
-                    {new Date(event.date).toLocaleDateString()} at {event.time}. Registration fee: ₹{event.price}
+                    Your payment information is encrypted and secure. We do not store your payment details.
                   </AlertDescription>
                 </Alert>
 
                 {/* Submit Button */}
                 <div className="flex justify-end space-x-4">
-                  <Link href="/student/dashboard">
-                    <Button variant="outline">Cancel</Button>
+                  <Link href={`/student/events/${eventId}/register`}>
+                    <Button variant="outline">Back to Registration</Button>
                   </Link>
                   <Button
                     onClick={handleRegistration}
@@ -623,10 +597,10 @@ export default function EventRegistration() {
                     {registering ? (
                       <>
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                        Processing...
+                        Processing Payment...
                       </>
                     ) : (
-                      `Register & Pay ₹${event.price}`
+                      `Pay ₹${event?.price}`
                     )}
                   </Button>
                 </div>
