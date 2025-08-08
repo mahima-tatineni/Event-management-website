@@ -25,6 +25,7 @@ import {
   Wrench,
   Gamepad2,
   Brain,
+  ChevronRight,
 } from "lucide-react"
 import Link from "next/link"
 
@@ -50,63 +51,48 @@ export default function HomePage() {
   const featuredEvents = [
     {
       id: 1,
-      title: "Tech Symposium 2024",
-      club: "CIE",
-      date: "2024-02-15",
-      time: "10:00 AM",
+      title: "HandCraft",
+      club: "Cultural Club",
+      date: "8 December 2021",
+      time: "2pm onwards",
       venue: "Main Auditorium",
       price: 150,
-      image: "/placeholder.svg?height=200&width=300&text=Tech+Symposium",
-      category: "technical",
-      description: "Annual technical symposium featuring industry experts and innovative projects",
+      image: "/placeholder.jpg",
+      category: "cultural",
+      description: "Creative arts and crafts workshop",
       registrations: 245,
       maxCapacity: 500,
       rating: 4.8,
     },
     {
       id: 2,
-      title: "Cultural Fest - Rangoli",
-      club: "Cultural Club",
-      date: "2024-02-20",
-      time: "2:00 PM",
+      title: "Dance",
+      club: "Dance Club",
+      date: "8 December 2021",
+      time: "6pm onwards",
       venue: "Open Ground",
       price: 100,
-      image: "/placeholder.svg?height=200&width=300&text=Cultural+Fest",
+      image: "/placeholder.jpg",
       category: "cultural",
-      description: "Celebrate diversity through art, music, and traditional performances",
+      description: "Dance performance and workshop",
       registrations: 180,
       maxCapacity: 300,
       rating: 4.6,
     },
     {
       id: 3,
-      title: "Entrepreneurship Workshop",
-      club: "E-Cell",
-      date: "2024-02-25",
-      time: "11:00 AM",
-      venue: "Seminar Hall",
+      title: "Valorant",
+      club: "Gaming Club",
+      date: "9 December 2021",
+      time: "2pm onwards",
+      venue: "Computer Lab",
       price: 200,
-      image: "/placeholder.svg?height=200&width=300&text=Entrepreneurship",
-      category: "workshop",
-      description: "Learn from successful entrepreneurs and build your startup ideas",
+      image: "/placeholder.jpg",
+      category: "gaming",
+      description: "Gaming tournament and competition",
       registrations: 95,
       maxCapacity: 150,
       rating: 4.9,
-    },
-    {
-      id: 4,
-      title: "Hackathon 2024",
-      club: "CODE",
-      date: "2024-03-01",
-      time: "9:00 AM",
-      venue: "Computer Lab",
-      price: 300,
-      image: "/placeholder.svg?height=200&width=300&text=Hackathon",
-      category: "competition",
-      description: "48-hour coding marathon with exciting prizes and mentorship",
-      registrations: 120,
-      maxCapacity: 200,
-      rating: 4.7,
     },
   ]
 
@@ -203,48 +189,48 @@ export default function HomePage() {
   })
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 relative overflow-hidden">
-      {/* Animated Background Elements */}
+    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 verve-pattern opacity-20" />
+      
+      {/* Gradient Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div
-          className="absolute top-20 left-10 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"
+          className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-orange-500/20 to-red-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 verve-animate-pulse-slow"
           style={{ transform: `translateY(${scrollY * 0.1}px)` }}
         />
         <div
-          className="absolute top-40 right-10 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"
+          className="absolute top-40 right-10 w-72 h-72 bg-gradient-to-r from-pink-500/20 to-orange-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 verve-animate-pulse-slow"
           style={{ transform: `translateY(${scrollY * 0.15}px)` }}
         />
         <div
-          className="absolute -bottom-32 left-20 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"
+          className="absolute -bottom-32 left-20 w-72 h-72 bg-gradient-to-r from-orange-500/20 to-yellow-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 verve-animate-pulse-slow"
           style={{ transform: `translateY(${scrollY * 0.05}px)` }}
         />
       </div>
 
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-purple-100 sticky top-0 z-50">
+      <header className="verve-header sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">C</span>
+              <div className="w-10 h-10 verve-gradient rounded-lg flex items-center justify-center">
+                <span className="text-black font-bold text-lg">C</span>
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-800">CampusHub</h1>
-                <p className="text-sm text-gray-600">MLRIT Event Management</p>
+                <h1 className="text-xl font-bold text-white">CampusHub</h1>
+                <p className="text-sm text-gray-400">MLRIT Event Management</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
               <Link href="/login">
-                <Button
-                  variant="outline"
-                  className="bg-transparent border-purple-200 text-purple-700 hover:bg-purple-50"
-                >
+                <Button variant="outline" className="verve-button-outline">
                   Login
                 </Button>
               </Link>
               <Link href="/register">
-                <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
-                  Get Started
+                <Button className="verve-button-primary">
+                  Register
                 </Button>
               </Link>
             </div>
@@ -253,38 +239,26 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative py-20 px-4 overflow-hidden">
-        {/* Enhanced animated background elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-10 left-10 w-96 h-96 bg-gradient-to-r from-purple-300 to-pink-300 rounded-full mix-blend-multiply filter blur-2xl opacity-60 animate-pulse" />
-          <div className="absolute top-40 right-10 w-96 h-96 bg-gradient-to-r from-blue-300 to-purple-300 rounded-full mix-blend-multiply filter blur-2xl opacity-60 animate-pulse animation-delay-2000" />
-          <div className="absolute -bottom-32 left-20 w-96 h-96 bg-gradient-to-r from-pink-300 to-blue-300 rounded-full mix-blend-multiply filter blur-2xl opacity-60 animate-pulse animation-delay-4000" />
-
-          {/* Floating elements */}
-          <div className="absolute top-20 left-1/4 w-4 h-4 bg-purple-400 rounded-full animate-bounce animation-delay-1000" />
-          <div className="absolute top-40 right-1/4 w-6 h-6 bg-pink-400 rounded-full animate-bounce animation-delay-3000" />
-          <div className="absolute bottom-40 left-1/3 w-3 h-3 bg-blue-400 rounded-full animate-bounce animation-delay-5000" />
-        </div>
-
+      <section className="verve-hero-bg relative py-20 px-4 overflow-hidden">
         <div className="container mx-auto text-center relative z-10">
           <div className="space-y-6 animate-fade-in">
             {/* Enhanced logo/icon */}
-            <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl transform hover:scale-110 transition-all duration-300">
-              <span className="text-white font-bold text-3xl">C</span>
+            <div className="w-20 h-20 verve-gradient rounded-2xl flex items-center justify-center mx-auto mb-6 verve-box-shadow transform hover:scale-110 transition-all duration-300">
+              <span className="text-black font-bold text-3xl">C</span>
             </div>
 
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-800 leading-tight">
+            <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight verve-text-shadow">
               Welcome to{" "}
-              <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent animate-gradient">
+              <span className="verve-gradient-text">
                 CampusHub
               </span>
             </h1>
 
             <div className="max-w-4xl mx-auto">
-              <p className="text-xl md:text-2xl text-gray-600 mb-4 font-light">
+              <p className="text-xl md:text-2xl text-gray-300 mb-4 font-light">
                 Your gateway to exciting campus events, workshops, and competitions
               </p>
-              <p className="text-base md:text-lg text-gray-500">
+              <p className="text-base md:text-lg text-gray-400">
                 Connect, learn, and grow with MLRIT's vibrant community of innovators and creators
               </p>
             </div>
@@ -293,7 +267,7 @@ export default function HomePage() {
               <Link href="/events">
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-lg px-10 py-5 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 font-semibold"
+                  className="verve-button-primary text-lg px-10 py-5 rounded-full verve-box-shadow transform hover:scale-105 transition-all duration-300 font-semibold"
                 >
                   Explore Events
                   <ArrowRight className="ml-3 w-5 h-5" />
@@ -303,7 +277,7 @@ export default function HomePage() {
                 <Button
                   variant="outline"
                   size="lg"
-                  className="text-lg px-10 py-5 rounded-full border-2 border-purple-200 text-purple-700 hover:bg-purple-50 transform hover:scale-105 transition-all duration-300 bg-white/80 backdrop-blur-sm font-semibold shadow-lg"
+                  className="verve-button-outline text-lg px-10 py-5 rounded-full transform hover:scale-105 transition-all duration-300 font-semibold"
                 >
                   Join Community
                 </Button>
@@ -313,18 +287,18 @@ export default function HomePage() {
             {/* Trust indicators */}
             <div className="flex justify-center items-center space-x-8 pt-12 opacity-70">
               <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">2.5K+</div>
-                <div className="text-sm text-gray-600">Active Students</div>
+                <div className="text-2xl font-bold verve-gradient-text">2.5K+</div>
+                <div className="text-sm text-gray-400">Active Students</div>
               </div>
-              <div className="w-px h-12 bg-gray-300" />
+              <div className="w-px h-12 bg-gray-600" />
               <div className="text-center">
-                <div className="text-2xl font-bold text-pink-600">50+</div>
-                <div className="text-sm text-gray-600">Events Monthly</div>
+                <div className="text-2xl font-bold verve-gradient-text">50+</div>
+                <div className="text-sm text-gray-400">Events Monthly</div>
               </div>
-              <div className="w-px h-12 bg-gray-300" />
+              <div className="w-px h-12 bg-gray-600" />
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">15+</div>
-                <div className="text-sm text-gray-600">Active Clubs</div>
+                <div className="text-2xl font-bold verve-gradient-text">15+</div>
+                <div className="text-sm text-gray-400">Active Clubs</div>
               </div>
             </div>
           </div>
@@ -338,18 +312,18 @@ export default function HomePage() {
             {stats.map((stat, index) => (
               <Card
                 key={stat.label}
-                className="text-center border-0 shadow-lg bg-white/70 backdrop-blur-sm hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                className="text-center verve-card hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                 style={{
                   animationDelay: `${index * 100}ms`,
                   animation: "fadeInUp 0.6s ease-out forwards",
                 }}
               >
                 <CardContent className="p-6">
-                  <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <stat.icon className="w-6 h-6 text-white" />
+                  <div className="w-12 h-12 verve-gradient rounded-full flex items-center justify-center mx-auto mb-4">
+                    <stat.icon className="w-6 h-6 text-black" />
                   </div>
-                  <div className="text-3xl font-bold text-gray-800 mb-2">{stat.value}</div>
-                  <div className="text-gray-600">{stat.label}</div>
+                  <div className="text-3xl font-bold text-white mb-2">{stat.value}</div>
+                  <div className="text-gray-400">{stat.label}</div>
                 </CardContent>
               </Card>
             ))}
@@ -358,23 +332,23 @@ export default function HomePage() {
       </section>
 
       {/* Featured Clubs Section */}
-      <section className="py-16 px-4 bg-white/30 backdrop-blur-sm">
+      <section className="py-16 px-4 bg-black/50">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-800 mb-4">Our Clubs</h2>
-            <p className="text-xl text-gray-600">Discover amazing clubs and communities at MLRIT</p>
+            <h2 className="text-4xl font-bold text-white mb-4">Our Clubs</h2>
+            <p className="text-xl text-gray-400">Discover amazing clubs and communities at MLRIT</p>
           </div>
 
           {/* Central Clubs */}
           <div className="mb-12">
-            <h3 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Central Clubs</h3>
+            <h3 className="text-2xl font-semibold text-white mb-6 text-center">Central Clubs</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
               {clubs
                 .filter((club) => club.type === "central")
                 .map((club, index) => (
                   <Card
                     key={club.name}
-                    className="group hover:shadow-xl transform hover:scale-105 transition-all duration-300 border-0 bg-white/70 backdrop-blur-sm cursor-pointer"
+                    className="group hover:shadow-xl transform hover:scale-105 transition-all duration-300 verve-card cursor-pointer"
                     style={{
                       animationDelay: `${index * 100}ms`,
                       animation: "fadeInUp 0.6s ease-out forwards",
@@ -386,8 +360,8 @@ export default function HomePage() {
                       >
                         <club.icon className="w-8 h-8 text-white" />
                       </div>
-                      <h4 className="font-bold text-gray-800 mb-2">{club.name}</h4>
-                      <p className="text-sm text-gray-600">{club.fullName}</p>
+                      <h4 className="font-bold text-white mb-2">{club.name}</h4>
+                      <p className="text-sm text-gray-400">{club.fullName}</p>
                     </CardContent>
                   </Card>
                 ))}
@@ -396,14 +370,14 @@ export default function HomePage() {
 
           {/* Departmental Clubs */}
           <div>
-            <h3 className="text-2xl font-semibold text-gray-800 mb-6 text-center">Departmental Clubs</h3>
+            <h3 className="text-2xl font-semibold text-white mb-6 text-center">Departmental Clubs</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {clubs
                 .filter((club) => club.type === "departmental")
                 .map((club, index) => (
                   <Card
                     key={club.name}
-                    className="group hover:shadow-xl transform hover:scale-105 transition-all duration-300 border-0 bg-white/70 backdrop-blur-sm cursor-pointer"
+                    className="group hover:shadow-xl transform hover:scale-105 transition-all duration-300 verve-card cursor-pointer"
                     style={{
                       animationDelay: `${index * 100}ms`,
                       animation: "fadeInUp 0.6s ease-out forwards",
@@ -415,8 +389,8 @@ export default function HomePage() {
                       >
                         <club.icon className="w-8 h-8 text-white" />
                       </div>
-                      <h4 className="font-bold text-gray-800 mb-2">{club.name}</h4>
-                      <p className="text-sm text-gray-600">{club.fullName}</p>
+                      <h4 className="font-bold text-white mb-2">{club.name}</h4>
+                      <p className="text-sm text-gray-400">{club.fullName}</p>
                     </CardContent>
                   </Card>
                 ))}
@@ -425,16 +399,16 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Events Section */}
+      {/* Upcoming Events Section */}
       <section className="py-16 px-4">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-800 mb-4">Featured Events</h2>
-            <p className="text-xl text-gray-600">Don't miss out on these amazing upcoming events</p>
+            <h2 className="text-4xl font-bold text-white mb-4">Upcoming Events</h2>
+            <p className="text-xl text-gray-400">Don't miss out on these amazing upcoming events</p>
           </div>
 
           {/* Search and Filter */}
-          <Card className="mb-8 border-0 shadow-lg bg-white/70 backdrop-blur-sm">
+          <Card className="mb-8 verve-card">
             <CardContent className="p-6">
               <div className="flex flex-col lg:flex-row gap-4">
                 <div className="flex-1 relative">
@@ -443,7 +417,7 @@ export default function HomePage() {
                     placeholder="Search events or clubs..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 h-12 border-purple-200 focus:border-purple-400"
+                    className="pl-10 h-12 verve-input"
                   />
                 </div>
                 <div className="flex gap-2 flex-wrap">
@@ -454,8 +428,8 @@ export default function HomePage() {
                       onClick={() => setSelectedCategory(category.id)}
                       className={`${
                         selectedCategory === category.id
-                          ? "bg-gradient-to-r from-purple-500 to-pink-500"
-                          : "border-purple-200 text-purple-700 hover:bg-purple-50"
+                          ? "verve-button-primary"
+                          : "verve-button-outline"
                       } transition-all duration-300`}
                     >
                       {category.name} ({category.count})
@@ -467,11 +441,11 @@ export default function HomePage() {
           </Card>
 
           {/* Events Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredEvents.map((event, index) => (
               <Card
                 key={event.id}
-                className="group hover:shadow-2xl transform hover:scale-105 transition-all duration-300 border-0 bg-white/70 backdrop-blur-sm overflow-hidden"
+                className="group verve-event-card overflow-hidden"
                 style={{
                   animationDelay: `${index * 150}ms`,
                   animation: "fadeInUp 0.6s ease-out forwards",
@@ -479,27 +453,32 @@ export default function HomePage() {
               >
                 <div className="relative">
                   <img
-                    src={event.image || "/placeholder.svg"}
+                    src={event.image || "/placeholder.jpg"}
                     alt={event.title}
                     className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                   <div className="absolute top-4 right-4">
-                    <Badge className="bg-white/90 text-gray-800 font-semibold">₹{event.price}</Badge>
+                    <Badge className="verve-badge">₹{event.price}</Badge>
                   </div>
                   <div className="absolute bottom-4 left-4">
-                    <Badge variant="secondary" className="bg-purple-500/90 text-white">
+                    <Badge variant="secondary" className="bg-white/20 text-white">
                       {event.club}
                     </Badge>
+                  </div>
+                  <div className="absolute top-4 right-4">
+                    <Button className="w-8 h-8 p-0 rounded-full verve-button-primary">
+                      <ChevronRight className="w-4 h-4" />
+                    </Button>
                   </div>
                 </div>
 
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-xl group-hover:text-purple-600 transition-colors">{event.title}</CardTitle>
-                  <CardDescription className="text-gray-600">{event.description}</CardDescription>
-                  <div className="flex items-center text-sm text-gray-600 space-x-4 pt-2">
+                  <CardTitle className="text-xl group-hover:text-orange-400 transition-colors">{event.title}</CardTitle>
+                  <CardDescription className="text-gray-400">{event.description}</CardDescription>
+                  <div className="flex items-center text-sm text-gray-400 space-x-4 pt-2">
                     <div className="flex items-center">
                       <Calendar className="w-4 h-4 mr-1" />
-                      {new Date(event.date).toLocaleDateString()}
+                      {event.date}
                     </div>
                     <div className="flex items-center">
                       <Clock className="w-4 h-4 mr-1" />
@@ -509,33 +488,33 @@ export default function HomePage() {
                 </CardHeader>
 
                 <CardContent className="pt-0">
-                  <div className="flex items-center text-sm text-gray-600 mb-4">
+                  <div className="flex items-center text-sm text-gray-400 mb-4">
                     <MapPin className="w-4 h-4 mr-1" />
                     {event.venue}
                   </div>
 
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center text-sm">
-                      <Users className="w-4 h-4 mr-1 text-green-500" />
+                      <Users className="w-4 h-4 mr-1 text-green-400" />
                       <span>
                         {event.registrations}/{event.maxCapacity}
                       </span>
                     </div>
                     <div className="flex items-center text-sm">
-                      <Star className="w-4 h-4 mr-1 text-yellow-500 fill-current" />
+                      <Star className="w-4 h-4 mr-1 text-yellow-400 fill-current" />
                       <span>{event.rating}</span>
                     </div>
                   </div>
 
-                  <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+                  <div className="w-full bg-gray-700 rounded-full h-2 mb-4">
                     <div
-                      className="bg-gradient-to-r from-green-400 to-green-500 h-2 rounded-full transition-all duration-500"
+                      className="verve-gradient h-2 rounded-full transition-all duration-500"
                       style={{ width: `${(event.registrations / event.maxCapacity) * 100}%` }}
                     />
                   </div>
 
-                  <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transform hover:scale-105 transition-all duration-300">
-                    Learn More
+                  <Button className="w-full verve-button-primary">
+                    Register
                     <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>
                 </CardContent>
@@ -546,7 +525,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white relative overflow-hidden">
+      <section className="py-20 px-4 verve-gradient text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-black/10" />
         <div className="container mx-auto text-center relative z-10">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to Get Started?</h2>
@@ -558,7 +537,7 @@ export default function HomePage() {
               <Button
                 size="lg"
                 variant="secondary"
-                className="text-lg px-8 py-4 rounded-full bg-white text-purple-600 hover:bg-gray-100 transform hover:scale-105 transition-all duration-300"
+                className="text-lg px-8 py-4 rounded-full bg-white text-black hover:bg-gray-100 transform hover:scale-105 transition-all duration-300"
               >
                 Sign Up Now
                 <ArrowRight className="ml-2 w-5 h-5" />
@@ -568,7 +547,7 @@ export default function HomePage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="text-lg px-8 py-4 rounded-full border-2 border-white text-white hover:bg-white hover:text-purple-600 transform hover:scale-105 transition-all duration-300 bg-transparent"
+                className="text-lg px-8 py-4 rounded-full border-2 border-white text-white hover:bg-white hover:text-black transform hover:scale-105 transition-all duration-300 bg-transparent"
               >
                 Login
               </Button>
@@ -578,13 +557,13 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 px-4">
+      <footer className="bg-black text-white py-12 px-4 border-t border-gray-800">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">C</span>
+                <div className="w-10 h-10 verve-gradient rounded-lg flex items-center justify-center">
+                  <span className="text-black font-bold text-lg">C</span>
                 </div>
                 <div>
                   <h3 className="text-xl font-bold">CampusHub</h3>
@@ -682,48 +661,6 @@ export default function HomePage() {
           to {
             opacity: 1;
           }
-        }
-        
-        @keyframes gradient {
-          0%, 100% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-        }
-        
-        .animate-gradient {
-          background-size: 200% 200%;
-          animation: gradient 3s ease infinite;
-        }
-        
-        .animation-delay-1000 {
-          animation-delay: 1s;
-        }
-        
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-        
-        .animation-delay-3000 {
-          animation-delay: 3s;
-        }
-        
-        .animation-delay-4000 {
-          animation-delay: 4s;
-        }
-        
-        .animation-delay-5000 {
-          animation-delay: 5s;
-        }
-        
-        .shadow-3xl {
-          box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
-        }
-        
-        .border-3 {
-          border-width: 3px;
         }
       `}</style>
     </div>

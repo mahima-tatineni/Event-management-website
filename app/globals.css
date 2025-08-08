@@ -44,15 +44,16 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+  
   .dark {
-    --background: 0 0% 3.9%;
+    --background: 0 0% 0%;
     --foreground: 0 0% 98%;
     --card: 0 0% 3.9%;
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
+    --primary: 25 95% 53%;
+    --primary-foreground: 0 0% 0%;
     --secondary: 0 0% 14.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 0 0% 14.9%;
@@ -63,20 +64,20 @@
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --ring: 25 95% 53%;
+    --chart-1: 25 95% 53%;
+    --chart-2: 25 85% 48%;
+    --chart-3: 25 75% 43%;
+    --chart-4: 25 65% 38%;
+    --chart-5: 25 55% 33%;
+    --sidebar-background: 0 0% 0%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 25 95% 53%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 14.9%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 14.9%;
+    --sidebar-ring: 25 95% 53%;
   }
 }
 
@@ -87,4 +88,150 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* VERVE Theme Custom Styles */
+.verve-gradient {
+  background: linear-gradient(135deg, #ff8c00 0%, #ff6b35 50%, #ff4757 100%);
+}
+
+.verve-gradient-text {
+  background: linear-gradient(135deg, #ff8c00 0%, #ff6b35 50%, #ff4757 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.verve-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.verve-glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.verve-button-primary {
+  background: linear-gradient(135deg, #ff8c00 0%, #ff6b35 100%);
+  border: none;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.verve-button-primary:hover {
+  background: linear-gradient(135deg, #ff6b35 0%, #ff4757 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(255, 140, 0, 0.3);
+}
+
+.verve-button-outline {
+  background: transparent;
+  border: 2px solid #ff8c00;
+  color: #ff8c00;
+  transition: all 0.3s ease;
+}
+
+.verve-button-outline:hover {
+  background: #ff8c00;
+  color: black;
+  transform: translateY(-2px);
+}
+
+.verve-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  backdrop-filter: blur(10px);
+}
+
+.verve-input:focus {
+  border-color: #ff8c00;
+  box-shadow: 0 0 0 2px rgba(255, 140, 0, 0.2);
+}
+
+.verve-badge {
+  background: linear-gradient(135deg, #ff8c00 0%, #ff6b35 100%);
+  color: white;
+  border: none;
+}
+
+.verve-event-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.verve-event-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(255, 140, 0, 0.2);
+  border-color: rgba(255, 140, 0, 0.3);
+}
+
+.verve-header {
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.verve-hero-bg {
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.verve-hero-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 80%, rgba(255, 140, 0, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(255, 107, 53, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.verve-pattern {
+  background-image: 
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      rgba(255, 140, 0, 0.03) 10px,
+      rgba(255, 140, 0, 0.03) 20px
+    );
+}
+
+.verve-animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.verve-animate-pulse-slow {
+  animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.verve-text-shadow {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.verve-box-shadow {
+  box-shadow: 0 10px 30px rgba(255, 140, 0, 0.2);
+}
+
+.verve-border-gradient {
+  border: 2px solid;
+  border-image: linear-gradient(135deg, #ff8c00, #ff6b35, #ff4757) 1;
 }

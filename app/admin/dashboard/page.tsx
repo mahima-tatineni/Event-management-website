@@ -95,7 +95,7 @@ export default function AdminDashboard() {
           registered: 35,
           price: 150,
           status: "pending",
-          image: "/placeholder.svg?height=200&width=300",
+          image: "/placeholder.jpg",
           createdAt: "2024-02-10T10:00:00Z",
           category: "Technical",
         },
@@ -111,7 +111,7 @@ export default function AdminDashboard() {
           registered: 78,
           price: 100,
           status: "approved",
-          image: "/placeholder.svg?height=200&width=300",
+          image: "/placeholder.jpg",
           createdAt: "2024-02-12T14:30:00Z",
           category: "Cultural",
         },
@@ -127,7 +127,7 @@ export default function AdminDashboard() {
           registered: 45,
           price: 200,
           status: "rejected",
-          image: "/placeholder.svg?height=200&width=300",
+          image: "/placeholder.jpg",
           createdAt: "2024-02-08T16:45:00Z",
           category: "Business",
           rejectionReason: "Insufficient budget allocation for this month",
@@ -195,21 +195,21 @@ export default function AdminDashboard() {
     switch (status) {
       case "approved":
         return (
-          <Badge className="bg-green-100 text-green-800">
+          <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
             <CheckCircle className="w-3 h-3 mr-1" />
             Approved
           </Badge>
         )
       case "pending":
         return (
-          <Badge className="bg-yellow-100 text-yellow-800">
+          <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
             <Clock className="w-3 h-3 mr-1" />
             Pending
           </Badge>
         )
       case "rejected":
         return (
-          <Badge className="bg-red-100 text-red-800">
+          <Badge className="bg-red-500/20 text-red-400 border-red-500/30">
             <XCircle className="w-3 h-3 mr-1" />
             Rejected
           </Badge>
@@ -242,22 +242,22 @@ export default function AdminDashboard() {
   }
 
   if (!user) {
-    return <div>Loading...</div>
+    return <div className="min-h-screen bg-black text-white flex items-center justify-center">Loading...</div>
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
+    <div className="min-h-screen bg-black text-white">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-purple-100 sticky top-0 z-50">
+      <header className="verve-header sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-                <Settings className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 verve-gradient rounded-lg flex items-center justify-center">
+                <Settings className="w-6 h-6 text-black" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-800">CampusHub Admin</h1>
-                <p className="text-sm text-gray-600">Event Management Dashboard</p>
+                <h1 className="text-xl font-bold text-white">CampusHub Admin</h1>
+                <p className="text-sm text-gray-400">Event Management Dashboard</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -271,19 +271,19 @@ export default function AdminDashboard() {
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuContent className="w-56 verve-card" align="end" forceMount>
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">{user.name}</p>
-                      <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+                      <p className="text-sm font-medium leading-none text-white">{user.name}</p>
+                      <p className="text-xs leading-none text-gray-400">{user.email}</p>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
+                  <DropdownMenuItem className="text-white hover:bg-white/10">
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Settings</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleLogout}>
+                  <DropdownMenuItem onClick={handleLogout} className="text-white hover:bg-white/10">
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                   </DropdownMenuItem>
@@ -297,66 +297,66 @@ export default function AdminDashboard() {
       <div className="container mx-auto px-4 py-8">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm">
+          <Card className="verve-card">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Events</p>
-                  <p className="text-3xl font-bold text-gray-900">{stats.totalEvents}</p>
+                  <p className="text-sm font-medium text-gray-400">Total Events</p>
+                  <p className="text-3xl font-bold text-white">{stats.totalEvents}</p>
                 </div>
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <Calendar className="w-6 h-6 text-blue-600" />
+                <div className="w-12 h-12 verve-gradient rounded-full flex items-center justify-center">
+                  <Calendar className="w-6 h-6 text-black" />
                 </div>
               </div>
               <div className="mt-2 flex items-center text-sm">
-                <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
-                <span className="text-green-600">+12% from last month</span>
+                <TrendingUp className="w-4 h-4 text-green-400 mr-1" />
+                <span className="text-green-400">+12% from last month</span>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm">
+          <Card className="verve-card">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Pending Review</p>
-                  <p className="text-3xl font-bold text-yellow-600">{stats.pendingEvents}</p>
+                  <p className="text-sm font-medium text-gray-400">Pending Review</p>
+                  <p className="text-3xl font-bold text-yellow-400">{stats.pendingEvents}</p>
                 </div>
-                <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
-                  <Clock className="w-6 h-6 text-yellow-600" />
+                <div className="w-12 h-12 verve-gradient rounded-full flex items-center justify-center">
+                  <Clock className="w-6 h-6 text-black" />
                 </div>
               </div>
-              <div className="mt-2 text-sm text-gray-600">Requires immediate attention</div>
+              <div className="mt-2 text-sm text-gray-400">Requires immediate attention</div>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm">
+          <Card className="verve-card">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Registrations</p>
-                  <p className="text-3xl font-bold text-gray-900">{stats.totalRegistrations}</p>
+                  <p className="text-sm font-medium text-gray-400">Total Registrations</p>
+                  <p className="text-3xl font-bold text-white">{stats.totalRegistrations}</p>
                 </div>
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                  <Users className="w-6 h-6 text-green-600" />
+                <div className="w-12 h-12 verve-gradient rounded-full flex items-center justify-center">
+                  <Users className="w-6 h-6 text-black" />
                 </div>
               </div>
-              <div className="mt-2 text-sm text-gray-600">Across all approved events</div>
+              <div className="mt-2 text-sm text-gray-400">Across all approved events</div>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm">
+          <Card className="verve-card">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Revenue Generated</p>
-                  <p className="text-3xl font-bold text-gray-900">₹{stats.totalRevenue.toLocaleString()}</p>
+                  <p className="text-sm font-medium text-gray-400">Revenue Generated</p>
+                  <p className="text-3xl font-bold text-white">₹{stats.totalRevenue.toLocaleString()}</p>
                 </div>
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 text-purple-600" />
+                <div className="w-12 h-12 verve-gradient rounded-full flex items-center justify-center">
+                  <TrendingUp className="w-6 h-6 text-black" />
                 </div>
               </div>
-              <div className="mt-2 text-sm text-gray-600">From registration fees</div>
+              <div className="mt-2 text-sm text-gray-400">From registration fees</div>
             </CardContent>
           </Card>
         </div>
@@ -364,15 +364,15 @@ export default function AdminDashboard() {
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <Link href="/admin/payments">
-            <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm hover:shadow-xl transition-shadow cursor-pointer">
+            <Card className="verve-card hover:shadow-xl transition-shadow cursor-pointer">
               <CardContent className="p-4">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                    <CreditCard className="w-5 h-5 text-green-600" />
+                  <div className="w-10 h-10 verve-gradient rounded-lg flex items-center justify-center">
+                    <CreditCard className="w-5 h-5 text-black" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-sm">Payment Tracking</h3>
-                    <p className="text-xs text-gray-600">Monitor transactions</p>
+                    <h3 className="font-semibold text-sm text-white">Payment Tracking</h3>
+                    <p className="text-xs text-gray-400">Monitor transactions</p>
                   </div>
                 </div>
               </CardContent>
@@ -380,15 +380,15 @@ export default function AdminDashboard() {
           </Link>
 
           <Link href="/admin/registrations">
-            <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm hover:shadow-xl transition-shadow cursor-pointer">
+            <Card className="verve-card hover:shadow-xl transition-shadow cursor-pointer">
               <CardContent className="p-4">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <UserCheck className="w-5 h-5 text-blue-600" />
+                  <div className="w-10 h-10 verve-gradient rounded-lg flex items-center justify-center">
+                    <UserCheck className="w-5 h-5 text-black" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-sm">Registrations</h3>
-                    <p className="text-xs text-gray-600">Manage participants</p>
+                    <h3 className="font-semibold text-sm text-white">Registrations</h3>
+                    <p className="text-xs text-gray-400">Manage participants</p>
                   </div>
                 </div>
               </CardContent>
@@ -396,30 +396,30 @@ export default function AdminDashboard() {
           </Link>
 
           <Link href="/admin/analytics">
-            <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm hover:shadow-xl transition-shadow cursor-pointer">
+            <Card className="verve-card hover:shadow-xl transition-shadow cursor-pointer">
               <CardContent className="p-4">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <BarChart3 className="w-5 h-5 text-purple-600" />
+                  <div className="w-10 h-10 verve-gradient rounded-lg flex items-center justify-center">
+                    <BarChart3 className="w-5 h-5 text-black" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-sm">Analytics</h3>
-                    <p className="text-xs text-gray-600">View insights</p>
+                    <h3 className="font-semibold text-sm text-white">Analytics</h3>
+                    <p className="text-xs text-gray-400">View insights</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
           </Link>
 
-          <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm hover:shadow-xl transition-shadow cursor-pointer">
+          <Card className="verve-card hover:shadow-xl transition-shadow cursor-pointer">
             <CardContent className="p-4">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-orange-600" />
+                <div className="w-10 h-10 verve-gradient rounded-lg flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-black" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-sm">Reports</h3>
-                  <p className="text-xs text-gray-600">Generate reports</p>
+                  <h3 className="font-semibold text-sm text-white">Reports</h3>
+                  <p className="text-xs text-gray-400">Generate reports</p>
                 </div>
               </div>
             </CardContent>
@@ -427,7 +427,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Search and Filter */}
-        <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm mb-6">
+        <Card className="verve-card mb-6">
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1">
@@ -437,22 +437,22 @@ export default function AdminDashboard() {
                     placeholder="Search events by title or club..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 verve-input"
                   />
                 </div>
               </div>
               <Select value={filterStatus} onValueChange={setFilterStatus}>
-                <SelectTrigger className="w-full md:w-48">
+                <SelectTrigger className="w-full md:w-48 verve-input">
                   <SelectValue placeholder="Filter by status" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="approved">Approved</SelectItem>
-                  <SelectItem value="rejected">Rejected</SelectItem>
+                <SelectContent className="verve-card">
+                  <SelectItem value="all" className="text-white hover:bg-white/10">All Status</SelectItem>
+                  <SelectItem value="pending" className="text-white hover:bg-white/10">Pending</SelectItem>
+                  <SelectItem value="approved" className="text-white hover:bg-white/10">Approved</SelectItem>
+                  <SelectItem value="rejected" className="text-white hover:bg-white/10">Rejected</SelectItem>
                 </SelectContent>
               </Select>
-              <Button variant="outline">
+              <Button variant="outline" className="verve-button-outline">
                 <Download className="w-4 h-4 mr-2" />
                 Export
               </Button>
@@ -461,23 +461,23 @@ export default function AdminDashboard() {
         </Card>
 
         {/* Events Management */}
-        <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm">
+        <Card className="verve-card">
           <CardHeader>
-            <CardTitle>Event Management</CardTitle>
-            <CardDescription>Review and manage event submissions from clubs</CardDescription>
+            <CardTitle className="text-white">Event Management</CardTitle>
+            <CardDescription className="text-gray-400">Review and manage event submissions from clubs</CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="pending" className="flex items-center space-x-2">
+              <TabsList className="grid w-full grid-cols-3 bg-gray-800">
+                <TabsTrigger value="pending" className="flex items-center space-x-2 data-[state=active]:verve-button-primary data-[state=active]:text-black">
                   <Clock className="w-4 h-4" />
                   <span>Pending ({stats.pendingEvents})</span>
                 </TabsTrigger>
-                <TabsTrigger value="approved" className="flex items-center space-x-2">
+                <TabsTrigger value="approved" className="flex items-center space-x-2 data-[state=active]:verve-button-primary data-[state=active]:text-black">
                   <CheckCircle className="w-4 h-4" />
                   <span>Approved ({stats.approvedEvents})</span>
                 </TabsTrigger>
-                <TabsTrigger value="rejected" className="flex items-center space-x-2">
+                <TabsTrigger value="rejected" className="flex items-center space-x-2 data-[state=active]:verve-button-primary data-[state=active]:text-black">
                   <XCircle className="w-4 h-4" />
                   <span>Rejected ({stats.rejectedEvents})</span>
                 </TabsTrigger>
@@ -488,42 +488,42 @@ export default function AdminDashboard() {
                   {filteredEvents
                     .filter((event) => event.status === "pending")
                     .map((event) => (
-                      <Card key={event.id} className="border border-yellow-200 bg-yellow-50/50">
+                      <Card key={event.id} className="border border-yellow-500/30 bg-yellow-500/5">
                         <CardContent className="p-6">
                           <div className="flex items-start justify-between">
                             <div className="flex items-start space-x-4">
                               <img
-                                src={event.image || "/placeholder.svg"}
+                                src={event.image || "/placeholder.jpg"}
                                 alt={event.title}
                                 className="w-16 h-16 object-cover rounded-lg"
                               />
                               <div className="flex-1">
                                 <div className="flex items-center space-x-2 mb-2">
-                                  <h3 className="text-lg font-semibold">{event.title}</h3>
+                                  <h3 className="text-lg font-semibold text-white">{event.title}</h3>
                                   {getStatusBadge(event.status)}
                                 </div>
-                                <p className="text-sm text-gray-600 mb-2">{event.club}</p>
-                                <p className="text-sm text-gray-700 mb-3">{event.description}</p>
+                                <p className="text-sm text-gray-400 mb-2">{event.club}</p>
+                                <p className="text-sm text-gray-300 mb-3">{event.description}</p>
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                                   <div>
-                                    <span className="font-medium">Date:</span> {event.date}
+                                    <span className="font-medium text-gray-400">Date:</span> <span className="text-white">{event.date}</span>
                                   </div>
                                   <div>
-                                    <span className="font-medium">Time:</span> {event.time}
+                                    <span className="font-medium text-gray-400">Time:</span> <span className="text-white">{event.time}</span>
                                   </div>
                                   <div>
-                                    <span className="font-medium">Venue:</span> {event.venue}
+                                    <span className="font-medium text-gray-400">Venue:</span> <span className="text-white">{event.venue}</span>
                                   </div>
                                   <div>
-                                    <span className="font-medium">Price:</span> ₹{event.price}
+                                    <span className="font-medium text-gray-400">Price:</span> <span className="text-white">₹{event.price}</span>
                                   </div>
                                 </div>
                                 <div className="mt-3">
                                   <div className="flex items-center justify-between text-sm">
-                                    <span>
-                                      Capacity: {event.registered}/{event.capacity}
+                                    <span className="text-gray-400">
+                                      Capacity: <span className="text-white">{event.registered}/{event.capacity}</span>
                                     </span>
-                                    <span>{Math.round((event.registered / event.capacity) * 100)}% filled</span>
+                                    <span className="text-white">{Math.round((event.registered / event.capacity) * 100)}% filled</span>
                                   </div>
                                   <Progress value={(event.registered / event.capacity) * 100} className="mt-1" />
                                 </div>
@@ -532,52 +532,52 @@ export default function AdminDashboard() {
                             <div className="flex space-x-2">
                               <Dialog>
                                 <DialogTrigger asChild>
-                                  <Button variant="outline" size="sm">
+                                  <Button variant="outline" size="sm" className="verve-button-outline">
                                     <Eye className="w-4 h-4" />
                                   </Button>
                                 </DialogTrigger>
-                                <DialogContent className="max-w-2xl">
+                                <DialogContent className="max-w-2xl verve-card">
                                   <DialogHeader>
-                                    <DialogTitle>{event.title}</DialogTitle>
-                                    <DialogDescription>Event details and review</DialogDescription>
+                                    <DialogTitle className="text-white">{event.title}</DialogTitle>
+                                    <DialogDescription className="text-gray-400">Event details and review</DialogDescription>
                                   </DialogHeader>
                                   <div className="space-y-4">
                                     <img
-                                      src={event.image || "/placeholder.svg"}
+                                      src={event.image || "/placeholder.jpg"}
                                       alt={event.title}
                                       className="w-full h-48 object-cover rounded-lg"
                                     />
                                     <div className="grid grid-cols-2 gap-4">
                                       <div>
-                                        <Label>Club</Label>
-                                        <p className="text-sm">{event.club}</p>
+                                        <Label className="text-white">Club</Label>
+                                        <p className="text-sm text-gray-300">{event.club}</p>
                                       </div>
                                       <div>
-                                        <Label>Category</Label>
-                                        <p className="text-sm">{event.category}</p>
+                                        <Label className="text-white">Category</Label>
+                                        <p className="text-sm text-gray-300">{event.category}</p>
                                       </div>
                                       <div>
-                                        <Label>Date & Time</Label>
-                                        <p className="text-sm">
+                                        <Label className="text-white">Date & Time</Label>
+                                        <p className="text-sm text-gray-300">
                                           {event.date} at {event.time}
                                         </p>
                                       </div>
                                       <div>
-                                        <Label>Venue</Label>
-                                        <p className="text-sm">{event.venue}</p>
+                                        <Label className="text-white">Venue</Label>
+                                        <p className="text-sm text-gray-300">{event.venue}</p>
                                       </div>
                                       <div>
-                                        <Label>Capacity</Label>
-                                        <p className="text-sm">{event.capacity} participants</p>
+                                        <Label className="text-white">Capacity</Label>
+                                        <p className="text-sm text-gray-300">{event.capacity} participants</p>
                                       </div>
                                       <div>
-                                        <Label>Registration Fee</Label>
-                                        <p className="text-sm">₹{event.price}</p>
+                                        <Label className="text-white">Registration Fee</Label>
+                                        <p className="text-sm text-gray-300">₹{event.price}</p>
                                       </div>
                                     </div>
                                     <div>
-                                      <Label>Description</Label>
-                                      <p className="text-sm mt-1">{event.description}</p>
+                                      <Label className="text-white">Description</Label>
+                                      <p className="text-sm mt-1 text-gray-300">{event.description}</p>
                                     </div>
                                   </div>
                                 </DialogContent>
@@ -585,7 +585,7 @@ export default function AdminDashboard() {
                               <Button
                                 size="sm"
                                 onClick={() => handleEventAction(event.id, "approve")}
-                                className="bg-green-600 hover:bg-green-700"
+                                className="verve-button-primary"
                               >
                                 <CheckCircle className="w-4 h-4 mr-1" />
                                 Approve
@@ -597,22 +597,23 @@ export default function AdminDashboard() {
                                     Reject
                                   </Button>
                                 </DialogTrigger>
-                                <DialogContent>
+                                <DialogContent className="verve-card">
                                   <DialogHeader>
-                                    <DialogTitle>Reject Event</DialogTitle>
-                                    <DialogDescription>
+                                    <DialogTitle className="text-white">Reject Event</DialogTitle>
+                                    <DialogDescription className="text-gray-400">
                                       Please provide a reason for rejecting "{event.title}"
                                     </DialogDescription>
                                   </DialogHeader>
                                   <div className="space-y-4">
                                     <div>
-                                      <Label htmlFor="reason">Rejection Reason</Label>
+                                      <Label htmlFor="reason" className="text-white">Rejection Reason</Label>
                                       <Textarea
                                         id="reason"
                                         placeholder="Please provide a detailed reason for rejection..."
                                         onChange={(e) =>
                                           setSelectedEvent({ ...event, rejectionReason: e.target.value })
                                         }
+                                        className="verve-input"
                                       />
                                     </div>
                                   </div>
@@ -642,68 +643,68 @@ export default function AdminDashboard() {
                   {filteredEvents
                     .filter((event) => event.status === "approved")
                     .map((event) => (
-                      <Card key={event.id} className="border border-green-200 bg-green-50/50">
+                      <Card key={event.id} className="border border-green-500/30 bg-green-500/5">
                         <CardContent className="p-6">
                           <div className="flex items-start justify-between">
                             <div className="flex items-start space-x-4">
                               <img
-                                src={event.image || "/placeholder.svg"}
+                                src={event.image || "/placeholder.jpg"}
                                 alt={event.title}
                                 className="w-16 h-16 object-cover rounded-lg"
                               />
                               <div className="flex-1">
                                 <div className="flex items-center space-x-2 mb-2">
-                                  <h3 className="text-lg font-semibold">{event.title}</h3>
+                                  <h3 className="text-lg font-semibold text-white">{event.title}</h3>
                                   {getStatusBadge(event.status)}
                                 </div>
-                                <p className="text-sm text-gray-600 mb-2">{event.club}</p>
-                                <p className="text-sm text-gray-700 mb-3">{event.description}</p>
+                                <p className="text-sm text-gray-400 mb-2">{event.club}</p>
+                                <p className="text-sm text-gray-300 mb-3">{event.description}</p>
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                                   <div>
-                                    <span className="font-medium">Date:</span> {event.date}
+                                    <span className="font-medium text-gray-400">Date:</span> <span className="text-white">{event.date}</span>
                                   </div>
                                   <div>
-                                    <span className="font-medium">Time:</span> {event.time}
+                                    <span className="font-medium text-gray-400">Time:</span> <span className="text-white">{event.time}</span>
                                   </div>
                                   <div>
-                                    <span className="font-medium">Venue:</span> {event.venue}
+                                    <span className="font-medium text-gray-400">Venue:</span> <span className="text-white">{event.venue}</span>
                                   </div>
                                   <div>
-                                    <span className="font-medium">Revenue:</span> ₹
-                                    {(event.registered * event.price).toLocaleString()}
+                                    <span className="font-medium text-gray-400">Revenue:</span> <span className="text-white">₹
+                                    {(event.registered * event.price).toLocaleString()}</span>
                                   </div>
                                 </div>
                                 <div className="mt-3">
                                   <div className="flex items-center justify-between text-sm">
-                                    <span>
-                                      Registrations: {event.registered}/{event.capacity}
+                                    <span className="text-gray-400">
+                                      Registrations: <span className="text-white">{event.registered}/{event.capacity}</span>
                                     </span>
-                                    <span>{Math.round((event.registered / event.capacity) * 100)}% filled</span>
+                                    <span className="text-white">{Math.round((event.registered / event.capacity) * 100)}% filled</span>
                                   </div>
                                   <Progress value={(event.registered / event.capacity) * 100} className="mt-1" />
                                 </div>
                               </div>
                             </div>
                             <div className="flex space-x-2">
-                              <Button variant="outline" size="sm">
+                              <Button variant="outline" size="sm" className="verve-button-outline">
                                 <Eye className="w-4 h-4" />
                               </Button>
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                  <Button variant="outline" size="sm">
+                                  <Button variant="outline" size="sm" className="verve-button-outline">
                                     <MoreHorizontal className="w-4 h-4" />
                                   </Button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent>
-                                  <DropdownMenuItem>
+                                <DropdownMenuContent className="verve-card">
+                                  <DropdownMenuItem className="text-white hover:bg-white/10">
                                     <Edit className="w-4 h-4 mr-2" />
                                     Edit Event
                                   </DropdownMenuItem>
-                                  <DropdownMenuItem>
+                                  <DropdownMenuItem className="text-white hover:bg-white/10">
                                     <Users className="w-4 h-4 mr-2" />
                                     View Registrations
                                   </DropdownMenuItem>
-                                  <DropdownMenuItem>
+                                  <DropdownMenuItem className="text-white hover:bg-white/10">
                                     <Download className="w-4 h-4 mr-2" />
                                     Export Data
                                   </DropdownMenuItem>
@@ -722,52 +723,52 @@ export default function AdminDashboard() {
                   {filteredEvents
                     .filter((event) => event.status === "rejected")
                     .map((event) => (
-                      <Card key={event.id} className="border border-red-200 bg-red-50/50">
+                      <Card key={event.id} className="border border-red-500/30 bg-red-500/5">
                         <CardContent className="p-6">
                           <div className="flex items-start justify-between">
                             <div className="flex items-start space-x-4">
                               <img
-                                src={event.image || "/placeholder.svg"}
+                                src={event.image || "/placeholder.jpg"}
                                 alt={event.title}
                                 className="w-16 h-16 object-cover rounded-lg opacity-75"
                               />
                               <div className="flex-1">
                                 <div className="flex items-center space-x-2 mb-2">
-                                  <h3 className="text-lg font-semibold">{event.title}</h3>
+                                  <h3 className="text-lg font-semibold text-white">{event.title}</h3>
                                   {getStatusBadge(event.status)}
                                 </div>
-                                <p className="text-sm text-gray-600 mb-2">{event.club}</p>
-                                <p className="text-sm text-gray-700 mb-3">{event.description}</p>
+                                <p className="text-sm text-gray-400 mb-2">{event.club}</p>
+                                <p className="text-sm text-gray-300 mb-3">{event.description}</p>
                                 {event.rejectionReason && (
-                                  <div className="bg-red-100 border border-red-200 rounded-lg p-3 mb-3">
-                                    <p className="text-sm font-medium text-red-800 mb-1">Rejection Reason:</p>
-                                    <p className="text-sm text-red-700">{event.rejectionReason}</p>
+                                  <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3 mb-3">
+                                    <p className="text-sm font-medium text-red-400 mb-1">Rejection Reason:</p>
+                                    <p className="text-sm text-red-300">{event.rejectionReason}</p>
                                   </div>
                                 )}
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                                   <div>
-                                    <span className="font-medium">Date:</span> {event.date}
+                                    <span className="font-medium text-gray-400">Date:</span> <span className="text-white">{event.date}</span>
                                   </div>
                                   <div>
-                                    <span className="font-medium">Time:</span> {event.time}
+                                    <span className="font-medium text-gray-400">Time:</span> <span className="text-white">{event.time}</span>
                                   </div>
                                   <div>
-                                    <span className="font-medium">Venue:</span> {event.venue}
+                                    <span className="font-medium text-gray-400">Venue:</span> <span className="text-white">{event.venue}</span>
                                   </div>
                                   <div>
-                                    <span className="font-medium">Price:</span> ₹{event.price}
+                                    <span className="font-medium text-gray-400">Price:</span> <span className="text-white">₹{event.price}</span>
                                   </div>
                                 </div>
                               </div>
                             </div>
                             <div className="flex space-x-2">
-                              <Button variant="outline" size="sm">
+                              <Button variant="outline" size="sm" className="verve-button-outline">
                                 <Eye className="w-4 h-4" />
                               </Button>
                               <Button
                                 size="sm"
                                 onClick={() => handleEventAction(event.id, "approve")}
-                                className="bg-green-600 hover:bg-green-700"
+                                className="verve-button-primary"
                               >
                                 <CheckCircle className="w-4 h-4 mr-1" />
                                 Reconsider

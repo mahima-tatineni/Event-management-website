@@ -13,6 +13,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { ArrowLeft, User, Users, AlertCircle, Eye, EyeOff } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { registerUser, registerStudent, registerClub } from "@/lib/auth"
 
 export default function RegisterPage() {
   const [userType, setUserType] = useState<"student" | "club">("student")
@@ -89,37 +90,43 @@ export default function RegisterPage() {
     }
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-
-      // Store user in database
-      const existingUsers = JSON.parse(localStorage.getItem("users") || "[]")
-
-      // Check if user with same email or roll number already exists
-      const userExists = existingUsers.some(
-        (user: any) =>
-          (user.email === studentData.email && user.role === "student") ||
-          (user.rollNo === studentData.rollNo && user.role === "student"),
+      // Register user with Supabase
+      const { user, error: userError } = await registerUser(
+        studentData.email,
+        studentData.password,
+        studentData.name,
+        "student"
       )
 
-      if (userExists) {
-        setError("User with this email or roll number already exists. Please log in.")
+      if (userError) {
+        setError(userError)
         setLoading(false)
-        router.push("/login") // Redirect to login page
         return
       }
 
-      const newUser = {
-        ...studentData,
-        role: "student",
-        id: Date.now(),
-        createdAt: new Date().toISOString(),
+      if (!user) {
+        setError("Failed to create user account")
+        setLoading(false)
+        return
       }
-      existingUsers.push(newUser)
-      localStorage.setItem("users", JSON.stringify(existingUsers))
 
-      // Also store in current session
-      localStorage.setItem("user", JSON.stringify(newUser))
+      // Create student profile
+      const { student, error: studentError } = await registerStudent(user, {
+        roll_no: studentData.rollNo,
+        department: studentData.department,
+        year: studentData.year,
+        phone: studentData.phone,
+      })
+
+      if (studentError) {
+        setError(studentError)
+        setLoading(false)
+        return
+      }
+
+      // Store user data in session
+      const userWithProfile = { ...user, student }
+      localStorage.setItem("user", JSON.stringify(userWithProfile))
 
       alert("Registration successful! Welcome to CampusHub!")
       router.push("/student/dashboard")
@@ -155,22 +162,44 @@ export default function RegisterPage() {
     }
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      // Register user with Supabase
+      const { user, error: userError } = await registerUser(
+        clubData.email,
+        clubData.password,
+        clubData.fullName,
+        "club"
+      )
 
-      // Store club in database
-      const existingUsers = JSON.parse(localStorage.getItem("users") || "[]")
-      const newUser = {
-        ...clubData,
-        role: "club",
-        id: Date.now(),
-        createdAt: new Date().toISOString(),
+      if (userError) {
+        setError(userError)
+        setLoading(false)
+        return
       }
-      existingUsers.push(newUser)
-      localStorage.setItem("users", JSON.stringify(existingUsers))
 
-      // Also store in current session
-      localStorage.setItem("user", JSON.stringify(newUser))
+      if (!user) {
+        setError("Failed to create user account")
+        setLoading(false)
+        return
+      }
+
+      // Create club profile
+      const { club, error: clubError } = await registerClub(user, {
+        club_name: clubData.clubName,
+        full_name: clubData.fullName,
+        contact_person: clubData.contactPerson,
+        phone: clubData.phone,
+        description: clubData.description,
+      })
+
+      if (clubError) {
+        setError(clubError)
+        setLoading(false)
+        return
+      }
+
+      // Store user data in session
+      const userWithProfile = { ...user, club }
+      localStorage.setItem("user", JSON.stringify(userWithProfile))
 
       alert("Club registration successful! Welcome to CampusHub!")
       router.push("/club/dashboard")
@@ -182,31 +211,40 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl">
+    <div className="min-h-screen bg-black text-white flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 verve-pattern opacity-10" />
+      
+      {/* Gradient Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-orange-500/20 to-red-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 verve-animate-pulse-slow" />
+        <div className="absolute bottom-20 right-10 w-72 h-72 bg-gradient-to-r from-pink-500/20 to-orange-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 verve-animate-pulse-slow" />
+      </div>
+
+      <div className="w-full max-w-2xl relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center text-purple-600 hover:text-purple-700 mb-4">
+          <Link href="/" className="inline-flex items-center text-orange-400 hover:text-orange-300 mb-4">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
           </Link>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Join CampusHub</h1>
-          <p className="text-gray-600">Create your account to get started</p>
+          <h1 className="text-3xl font-bold text-white mb-2">Join CampusHub</h1>
+          <p className="text-gray-400">Create your account to get started</p>
         </div>
 
-        <Card className="border-0 shadow-2xl bg-white/80 backdrop-blur-md">
+        <Card className="verve-glass border-0 shadow-2xl">
           <CardHeader>
             <Tabs
               value={userType}
               onValueChange={(value) => setUserType(value as "student" | "club")}
               className="w-full"
             >
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="student" className="flex items-center">
+              <TabsList className="grid w-full grid-cols-2 bg-gray-800">
+                <TabsTrigger value="student" className="flex items-center data-[state=active]:verve-button-primary data-[state=active]:text-black">
                   <User className="w-4 h-4 mr-2" />
                   Student
                 </TabsTrigger>
-                <TabsTrigger value="club" className="flex items-center">
+                <TabsTrigger value="club" className="flex items-center data-[state=active]:verve-button-primary data-[state=active]:text-black">
                   <Users className="w-4 h-4 mr-2" />
                   Club
                 </TabsTrigger>
@@ -216,9 +254,9 @@ export default function RegisterPage() {
 
           <CardContent>
             {error && (
-              <Alert className="border-red-200 bg-red-50 mb-6">
+              <Alert className="border-red-500/20 bg-red-500/10 mb-6">
                 <AlertCircle className="h-4 w-4" />
-                <AlertDescription className="text-red-700">{error}</AlertDescription>
+                <AlertDescription className="text-red-400">{error}</AlertDescription>
               </Alert>
             )}
 
@@ -227,53 +265,53 @@ export default function RegisterPage() {
                 <form onSubmit={handleStudentSubmit} className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="student-name">Full Name *</Label>
+                      <Label htmlFor="student-name" className="text-white">Full Name *</Label>
                       <Input
                         id="student-name"
                         placeholder="Enter your full name"
                         value={studentData.name}
                         onChange={(e) => setStudentData({ ...studentData, name: e.target.value })}
-                        className="h-12 border-gray-200 focus:border-purple-400"
+                        className="h-12 verve-input"
                         required
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="student-roll">Roll Number *</Label>
+                      <Label htmlFor="student-roll" className="text-white">Roll Number *</Label>
                       <Input
                         id="student-roll"
                         placeholder="e.g., 21CS001"
                         value={studentData.rollNo}
                         onChange={(e) => setStudentData({ ...studentData, rollNo: e.target.value })}
-                        className="h-12 border-gray-200 focus:border-purple-400"
+                        className="h-12 verve-input"
                         required
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="student-email">Email Address *</Label>
+                    <Label htmlFor="student-email" className="text-white">Email Address *</Label>
                     <Input
                       id="student-email"
                       type="email"
                       placeholder="your.email@mlrit.ac.in"
                       value={studentData.email}
                       onChange={(e) => setStudentData({ ...studentData, email: e.target.value })}
-                      className="h-12 border-gray-200 focus:border-purple-400"
+                      className="h-12 verve-input"
                       required
                     />
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="student-department">Department</Label>
+                      <Label htmlFor="student-department" className="text-white">Department</Label>
                       <Select onValueChange={(value) => setStudentData({ ...studentData, department: value })}>
-                        <SelectTrigger className="h-12 border-gray-200 focus:border-purple-400">
+                        <SelectTrigger className="h-12 verve-input">
                           <SelectValue placeholder="Select department" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="verve-card">
                           {departments.map((dept) => (
-                            <SelectItem key={dept} value={dept}>
+                            <SelectItem key={dept} value={dept} className="text-white hover:bg-white/10">
                               {dept}
                             </SelectItem>
                           ))}
@@ -282,14 +320,14 @@ export default function RegisterPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="student-year">Year</Label>
+                      <Label htmlFor="student-year" className="text-white">Year</Label>
                       <Select onValueChange={(value) => setStudentData({ ...studentData, year: value })}>
-                        <SelectTrigger className="h-12 border-gray-200 focus:border-purple-400">
+                        <SelectTrigger className="h-12 verve-input">
                           <SelectValue placeholder="Select year" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="verve-card">
                           {years.map((year) => (
-                            <SelectItem key={year} value={year}>
+                            <SelectItem key={year} value={year} className="text-white hover:bg-white/10">
                               {year}
                             </SelectItem>
                           ))}
@@ -299,19 +337,19 @@ export default function RegisterPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="student-phone">Phone Number</Label>
+                    <Label htmlFor="student-phone" className="text-white">Phone Number</Label>
                     <Input
                       id="student-phone"
                       placeholder="+91 9876543210"
                       value={studentData.phone}
                       onChange={(e) => setStudentData({ ...studentData, phone: e.target.value })}
-                      className="h-12 border-gray-200 focus:border-purple-400"
+                      className="h-12 verve-input"
                     />
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="student-password">Password *</Label>
+                      <Label htmlFor="student-password" className="text-white">Password *</Label>
                       <div className="relative">
                         <Input
                           id="student-password"
@@ -319,14 +357,14 @@ export default function RegisterPage() {
                           placeholder="Create a password"
                           value={studentData.password}
                           onChange={(e) => setStudentData({ ...studentData, password: e.target.value })}
-                          className="h-12 border-gray-200 focus:border-purple-400 pr-10"
+                          className="h-12 verve-input pr-10"
                           required
                         />
                         <Button
                           type="button"
                           variant="ghost"
                           size="sm"
-                          className="absolute right-0 top-0 h-12 px-3 py-2 hover:bg-transparent"
+                          className="absolute right-0 top-0 h-12 px-3 py-2 hover:bg-transparent text-gray-400"
                           onClick={() => setShowPassword(!showPassword)}
                         >
                           {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -335,7 +373,7 @@ export default function RegisterPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="student-confirm-password">Confirm Password *</Label>
+                      <Label htmlFor="student-confirm-password" className="text-white">Confirm Password *</Label>
                       <div className="relative">
                         <Input
                           id="student-confirm-password"
@@ -343,14 +381,14 @@ export default function RegisterPage() {
                           placeholder="Confirm your password"
                           value={studentData.confirmPassword}
                           onChange={(e) => setStudentData({ ...studentData, confirmPassword: e.target.value })}
-                          className="h-12 border-gray-200 focus:border-purple-400 pr-10"
+                          className="h-12 verve-input pr-10"
                           required
                         />
                         <Button
                           type="button"
                           variant="ghost"
                           size="sm"
-                          className="absolute right-0 top-0 h-12 px-3 py-2 hover:bg-transparent"
+                          className="absolute right-0 top-0 h-12 px-3 py-2 hover:bg-transparent text-gray-400"
                           onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                         >
                           {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -362,7 +400,7 @@ export default function RegisterPage() {
                   <Button
                     type="submit"
                     disabled={loading}
-                    className="w-full h-12 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-lg font-semibold"
+                    className="w-full h-12 verve-button-primary text-lg font-semibold"
                   >
                     {loading ? "Creating Account..." : "Create Student Account"}
                   </Button>
@@ -372,7 +410,7 @@ export default function RegisterPage() {
               <TabsContent value="club">
                 <form onSubmit={handleClubSubmit} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="club-select">Select Club *</Label>
+                    <Label htmlFor="club-select" className="text-white">Select Club *</Label>
                     <Select
                       onValueChange={(value) => {
                         const selectedClub = clubs.find((club) => club.value === value)
@@ -385,29 +423,29 @@ export default function RegisterPage() {
                         }
                       }}
                     >
-                      <SelectTrigger className="h-12 border-gray-200 focus:border-purple-400">
+                      <SelectTrigger className="h-12 verve-input">
                         <SelectValue placeholder="Choose your club" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <div className="px-2 py-1 text-sm font-semibold text-purple-600">Central Clubs</div>
+                      <SelectContent className="verve-card">
+                        <div className="px-2 py-1 text-sm font-semibold text-orange-400">Central Clubs</div>
                         {clubs
                           .filter((club) => club.type === "central")
                           .map((club) => (
-                            <SelectItem key={club.value} value={club.value}>
+                            <SelectItem key={club.value} value={club.value} className="text-white hover:bg-white/10">
                               <div>
                                 <div className="font-medium">{club.label}</div>
-                                <div className="text-xs text-gray-500">{club.fullName}</div>
+                                <div className="text-xs text-gray-400">{club.fullName}</div>
                               </div>
                             </SelectItem>
                           ))}
-                        <div className="px-2 py-1 text-sm font-semibold text-purple-600 mt-2">Departmental Clubs</div>
+                        <div className="px-2 py-1 text-sm font-semibold text-orange-400 mt-2">Departmental Clubs</div>
                         {clubs
                           .filter((club) => club.type === "departmental")
                           .map((club) => (
-                            <SelectItem key={club.value} value={club.value}>
+                            <SelectItem key={club.value} value={club.value} className="text-white hover:bg-white/10">
                               <div>
                                 <div className="font-medium">{club.label}</div>
-                                <div className="text-xs text-gray-500">{club.fullName}</div>
+                                <div className="text-xs text-gray-400">{club.fullName}</div>
                               </div>
                             </SelectItem>
                           ))}
@@ -416,57 +454,57 @@ export default function RegisterPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="club-email">Club Email *</Label>
+                    <Label htmlFor="club-email" className="text-white">Club Email *</Label>
                     <Input
                       id="club-email"
                       type="email"
                       placeholder="club@mlrit.ac.in"
                       value={clubData.email}
                       onChange={(e) => setClubData({ ...clubData, email: e.target.value })}
-                      className="h-12 border-gray-200 focus:border-purple-400"
+                      className="h-12 verve-input"
                       required
                     />
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="contact-person">Contact Person *</Label>
+                      <Label htmlFor="contact-person" className="text-white">Contact Person *</Label>
                       <Input
                         id="contact-person"
                         placeholder="Faculty coordinator name"
                         value={clubData.contactPerson}
                         onChange={(e) => setClubData({ ...clubData, contactPerson: e.target.value })}
-                        className="h-12 border-gray-200 focus:border-purple-400"
+                        className="h-12 verve-input"
                         required
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="club-phone">Contact Phone</Label>
+                      <Label htmlFor="club-phone" className="text-white">Contact Phone</Label>
                       <Input
                         id="club-phone"
                         placeholder="+91 9876543210"
                         value={clubData.phone}
                         onChange={(e) => setClubData({ ...clubData, phone: e.target.value })}
-                        className="h-12 border-gray-200 focus:border-purple-400"
+                        className="h-12 verve-input"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="club-description">Club Description</Label>
+                    <Label htmlFor="club-description" className="text-white">Club Description</Label>
                     <Input
                       id="club-description"
                       placeholder="Brief description of your club"
                       value={clubData.description}
                       onChange={(e) => setClubData({ ...clubData, description: e.target.value })}
-                      className="h-12 border-gray-200 focus:border-purple-400"
+                      className="h-12 verve-input"
                     />
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="club-password">Password *</Label>
+                      <Label htmlFor="club-password" className="text-white">Password *</Label>
                       <div className="relative">
                         <Input
                           id="club-password"
@@ -474,14 +512,14 @@ export default function RegisterPage() {
                           placeholder="Create a password"
                           value={clubData.password}
                           onChange={(e) => setClubData({ ...clubData, password: e.target.value })}
-                          className="h-12 border-gray-200 focus:border-purple-400 pr-10"
+                          className="h-12 verve-input pr-10"
                           required
                         />
                         <Button
                           type="button"
                           variant="ghost"
                           size="sm"
-                          className="absolute right-0 top-0 h-12 px-3 py-2 hover:bg-transparent"
+                          className="absolute right-0 top-0 h-12 px-3 py-2 hover:bg-transparent text-gray-400"
                           onClick={() => setShowPassword(!showPassword)}
                         >
                           {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -490,7 +528,7 @@ export default function RegisterPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="club-confirm-password">Confirm Password *</Label>
+                      <Label htmlFor="club-confirm-password" className="text-white">Confirm Password *</Label>
                       <div className="relative">
                         <Input
                           id="club-confirm-password"
@@ -498,14 +536,14 @@ export default function RegisterPage() {
                           placeholder="Confirm your password"
                           value={clubData.confirmPassword}
                           onChange={(e) => setClubData({ ...clubData, confirmPassword: e.target.value })}
-                          className="h-12 border-gray-200 focus:border-purple-400 pr-10"
+                          className="h-12 verve-input pr-10"
                           required
                         />
                         <Button
                           type="button"
                           variant="ghost"
                           size="sm"
-                          className="absolute right-0 top-0 h-12 px-3 py-2 hover:bg-transparent"
+                          className="absolute right-0 top-0 h-12 px-3 py-2 hover:bg-transparent text-gray-400"
                           onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                         >
                           {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -517,7 +555,7 @@ export default function RegisterPage() {
                   <Button
                     type="submit"
                     disabled={loading}
-                    className="w-full h-12 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-lg font-semibold"
+                    className="w-full h-12 verve-button-primary text-lg font-semibold"
                   >
                     {loading ? "Creating Account..." : "Create Club Account"}
                   </Button>
@@ -526,9 +564,9 @@ export default function RegisterPage() {
             </Tabs>
 
             <div className="mt-6 text-center">
-              <p className="text-gray-600">
+              <p className="text-gray-400">
                 Already have an account?{" "}
-                <Link href="/login" className="text-purple-600 hover:text-purple-700 font-semibold">
+                <Link href="/login" className="text-orange-400 hover:text-orange-300 font-semibold">
                   Sign in here
                 </Link>
               </p>

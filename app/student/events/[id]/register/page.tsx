@@ -63,7 +63,7 @@ export default function EventRegistration() {
       time: "10:00 AM",
       venue: "Main Auditorium",
       price: 150,
-      image: "/placeholder.svg?height=400&width=600",
+      image: "/placeholder.jpg",
       rating: 4.8,
       registrations: 245,
       maxCapacity: 500,
@@ -91,7 +91,7 @@ export default function EventRegistration() {
       time: "2:00 PM",
       venue: "Open Ground",
       price: 100,
-      image: "/placeholder.svg?height=400&width=600",
+      image: "/placeholder.jpg",
       rating: 4.6,
       registrations: 180,
       maxCapacity: 300,
@@ -123,7 +123,7 @@ export default function EventRegistration() {
       time: "11:00 AM",
       venue: "Seminar Hall",
       price: 200,
-      image: "/placeholder.svg?height=400&width=600",
+      image: "/placeholder.jpg",
       rating: 4.9,
       registrations: 95,
       maxCapacity: 150,
@@ -237,10 +237,10 @@ export default function EventRegistration() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 flex items-center justify-center">
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading event details...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-gray-400">Loading event details...</p>
         </div>
       </div>
     )
@@ -248,14 +248,14 @@ export default function EventRegistration() {
 
   if (!event) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 flex items-center justify-center">
-        <Card className="max-w-md">
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <Card className="max-w-md verve-card">
           <CardContent className="p-6 text-center">
-            <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Event Not Found</h2>
-            <p className="text-gray-600 mb-4">The event you're looking for doesn't exist.</p>
+            <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
+            <h2 className="text-xl font-semibold mb-2 text-white">Event Not Found</h2>
+            <p className="text-gray-400 mb-4">The event you're looking for doesn't exist.</p>
             <Link href="/student/dashboard">
-              <Button>Back to Dashboard</Button>
+              <Button className="verve-button-primary">Back to Dashboard</Button>
             </Link>
           </CardContent>
         </Card>
@@ -264,20 +264,20 @@ export default function EventRegistration() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
+    <div className="min-h-screen bg-black text-white">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-purple-100 sticky top-0 z-50">
+      <header className="verve-header sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link href="/student/dashboard">
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="verve-button-outline">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Dashboard
               </Button>
             </Link>
             <div>
-              <h1 className="text-xl font-bold text-gray-800">Event Registration</h1>
-              <p className="text-sm text-gray-600">Complete your registration for {event.title}</p>
+              <h1 className="text-xl font-bold text-white">Event Registration</h1>
+              <p className="text-sm text-gray-400">Complete your registration for {event.title}</p>
             </div>
           </div>
         </div>
@@ -287,10 +287,10 @@ export default function EventRegistration() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Event Details Sidebar */}
           <div className="lg:col-span-1">
-            <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm sticky top-24">
+            <Card className="verve-card sticky top-24">
               <div className="relative">
                 <img
-                  src={event.image || "/placeholder.svg"}
+                  src={event.image || "/placeholder.jpg"}
                   alt={event.title}
                   className="w-full h-48 object-cover rounded-t-lg"
                 />
@@ -300,9 +300,9 @@ export default function EventRegistration() {
               </div>
 
               <CardHeader>
-                <CardTitle className="text-lg">{event.title}</CardTitle>
-                <CardDescription>{event.club}</CardDescription>
-                <div className="flex items-center text-sm text-gray-600 space-x-4">
+                <CardTitle className="text-lg text-white">{event.title}</CardTitle>
+                <CardDescription className="text-gray-400">{event.club}</CardDescription>
+                <div className="flex items-center text-sm text-gray-400 space-x-4">
                   <div className="flex items-center">
                     <Calendar className="w-4 h-4 mr-1" />
                     {new Date(event.date).toLocaleDateString()}
@@ -312,7 +312,7 @@ export default function EventRegistration() {
                     {event.time}
                   </div>
                 </div>
-                <div className="flex items-center text-sm text-gray-600">
+                <div className="flex items-center text-sm text-gray-400">
                   <MapPin className="w-4 h-4 mr-1" />
                   {event.venue}
                 </div>
@@ -321,11 +321,11 @@ export default function EventRegistration() {
               <CardContent>
                 <div className="space-y-4">
                   <div>
-                    <h4 className="font-semibold mb-2">Event Features</h4>
-                    <ul className="text-sm text-gray-600 space-y-1">
+                    <h4 className="font-semibold mb-2 text-white">Event Features</h4>
+                    <ul className="text-sm text-gray-400 space-y-1">
                       {event.features.map((feature: string, index: number) => (
                         <li key={index} className="flex items-center">
-                          <CheckCircle className="w-3 h-3 text-green-500 mr-2 flex-shrink-0" />
+                          <CheckCircle className="w-3 h-3 text-green-400 mr-2 flex-shrink-0" />
                           {feature}
                         </li>
                       ))}
@@ -335,11 +335,11 @@ export default function EventRegistration() {
                   <Separator />
 
                   <div>
-                    <h4 className="font-semibold mb-2">Requirements</h4>
-                    <ul className="text-sm text-gray-600 space-y-1">
+                    <h4 className="font-semibold mb-2 text-white">Requirements</h4>
+                    <ul className="text-sm text-gray-400 space-y-1">
                       {event.requirements.map((req: string, index: number) => (
                         <li key={index} className="flex items-center">
-                          <AlertCircle className="w-3 h-3 text-orange-500 mr-2 flex-shrink-0" />
+                          <AlertCircle className="w-3 h-3 text-orange-400 mr-2 flex-shrink-0" />
                           {req}
                         </li>
                       ))}
@@ -348,16 +348,16 @@ export default function EventRegistration() {
 
                   <Separator />
 
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-gray-400">
                     <p>
-                      <strong>Registration Deadline:</strong>{" "}
+                      <strong className="text-white">Registration Deadline:</strong>{" "}
                       {new Date(event.registrationDeadline).toLocaleDateString()}
                     </p>
                     <p>
-                      <strong>Contact:</strong> {event.contactEmail}
+                      <strong className="text-white">Contact:</strong> {event.contactEmail}
                     </p>
                     <p>
-                      <strong>Phone:</strong> {event.contactPhone}
+                      <strong className="text-white">Phone:</strong> {event.contactPhone}
                     </p>
                   </div>
                 </div>
@@ -367,86 +367,86 @@ export default function EventRegistration() {
 
           {/* Registration Form */}
           <div className="lg:col-span-2">
-            <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm">
+            <Card className="verve-card">
               <CardHeader>
-                <CardTitle>Registration Form</CardTitle>
-                <CardDescription>Please fill in all required information to complete your registration</CardDescription>
+                <CardTitle className="text-white">Registration Form</CardTitle>
+                <CardDescription className="text-gray-400">Please fill in all required information to complete your registration</CardDescription>
               </CardHeader>
 
               <CardContent className="space-y-6">
                 {/* Personal Information */}
                 <div>
-                  <h3 className="text-lg font-semibold mb-4 flex items-center">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center text-white">
                     <User className="w-5 h-5 mr-2" />
                     Personal Information
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="participantName">Full Name *</Label>
+                      <Label htmlFor="participantName" className="text-white">Full Name *</Label>
                       <Input
                         id="participantName"
                         value={formData.participantName}
                         onChange={(e) => handleInputChange("participantName", e.target.value)}
-                        className={errors.participantName ? "border-red-500" : ""}
+                        className={`verve-input ${errors.participantName ? "border-red-500" : ""}`}
                       />
-                      {errors.participantName && <p className="text-red-500 text-sm mt-1">{errors.participantName}</p>}
+                      {errors.participantName && <p className="text-red-400 text-sm mt-1">{errors.participantName}</p>}
                     </div>
 
                     <div>
-                      <Label htmlFor="email">Email Address *</Label>
+                      <Label htmlFor="email" className="text-white">Email Address *</Label>
                       <Input
                         id="email"
                         type="email"
                         value={formData.email}
                         onChange={(e) => handleInputChange("email", e.target.value)}
-                        className={errors.email ? "border-red-500" : ""}
+                        className={`verve-input ${errors.email ? "border-red-500" : ""}`}
                       />
-                      {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+                      {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
                     </div>
 
                     <div>
-                      <Label htmlFor="phone">Phone Number *</Label>
+                      <Label htmlFor="phone" className="text-white">Phone Number *</Label>
                       <Input
                         id="phone"
                         value={formData.phone}
                         onChange={(e) => handleInputChange("phone", e.target.value)}
-                        className={errors.phone ? "border-red-500" : ""}
+                        className={`verve-input ${errors.phone ? "border-red-500" : ""}`}
                       />
-                      {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+                      {errors.phone && <p className="text-red-400 text-sm mt-1">{errors.phone}</p>}
                     </div>
 
                     <div>
-                      <Label htmlFor="rollNumber">Roll Number *</Label>
+                      <Label htmlFor="rollNumber" className="text-white">Roll Number *</Label>
                       <Input
                         id="rollNumber"
                         value={formData.rollNumber}
                         onChange={(e) => handleInputChange("rollNumber", e.target.value)}
-                        className={errors.rollNumber ? "border-red-500" : ""}
+                        className={`verve-input ${errors.rollNumber ? "border-red-500" : ""}`}
                       />
-                      {errors.rollNumber && <p className="text-red-500 text-sm mt-1">{errors.rollNumber}</p>}
+                      {errors.rollNumber && <p className="text-red-400 text-sm mt-1">{errors.rollNumber}</p>}
                     </div>
 
                     <div>
-                      <Label htmlFor="department">Department *</Label>
+                      <Label htmlFor="department" className="text-white">Department *</Label>
                       <Input
                         id="department"
                         value={formData.department}
                         onChange={(e) => handleInputChange("department", e.target.value)}
-                        className={errors.department ? "border-red-500" : ""}
+                        className={`verve-input ${errors.department ? "border-red-500" : ""}`}
                       />
-                      {errors.department && <p className="text-red-500 text-sm mt-1">{errors.department}</p>}
+                      {errors.department && <p className="text-red-400 text-sm mt-1">{errors.department}</p>}
                     </div>
 
                     <div>
-                      <Label htmlFor="year">Year of Study *</Label>
+                      <Label htmlFor="year" className="text-white">Year of Study *</Label>
                       <Input
                         id="year"
                         value={formData.year}
                         onChange={(e) => handleInputChange("year", e.target.value)}
                         placeholder="e.g., 2nd Year"
-                        className={errors.year ? "border-red-500" : ""}
+                        className={`verve-input ${errors.year ? "border-red-500" : ""}`}
                       />
-                      {errors.year && <p className="text-red-500 text-sm mt-1">{errors.year}</p>}
+                      {errors.year && <p className="text-red-400 text-sm mt-1">{errors.year}</p>}
                     </div>
                   </div>
                 </div>
@@ -455,33 +455,33 @@ export default function EventRegistration() {
 
                 {/* Emergency Contact */}
                 <div>
-                  <h3 className="text-lg font-semibold mb-4 flex items-center">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center text-white">
                     <Phone className="w-5 h-5 mr-2" />
                     Emergency Contact
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="emergencyContact">Emergency Contact Name *</Label>
+                      <Label htmlFor="emergencyContact" className="text-white">Emergency Contact Name *</Label>
                       <Input
                         id="emergencyContact"
                         value={formData.emergencyContact}
                         onChange={(e) => handleInputChange("emergencyContact", e.target.value)}
-                        className={errors.emergencyContact ? "border-red-500" : ""}
+                        className={`verve-input ${errors.emergencyContact ? "border-red-500" : ""}`}
                       />
                       {errors.emergencyContact && (
-                        <p className="text-red-500 text-sm mt-1">{errors.emergencyContact}</p>
+                        <p className="text-red-400 text-sm mt-1">{errors.emergencyContact}</p>
                       )}
                     </div>
 
                     <div>
-                      <Label htmlFor="emergencyPhone">Emergency Contact Phone *</Label>
+                      <Label htmlFor="emergencyPhone" className="text-white">Emergency Contact Phone *</Label>
                       <Input
                         id="emergencyPhone"
                         value={formData.emergencyPhone}
                         onChange={(e) => handleInputChange("emergencyPhone", e.target.value)}
-                        className={errors.emergencyPhone ? "border-red-500" : ""}
+                        className={`verve-input ${errors.emergencyPhone ? "border-red-500" : ""}`}
                       />
-                      {errors.emergencyPhone && <p className="text-red-500 text-sm mt-1">{errors.emergencyPhone}</p>}
+                      {errors.emergencyPhone && <p className="text-red-400 text-sm mt-1">{errors.emergencyPhone}</p>}
                     </div>
                   </div>
                 </div>
@@ -491,30 +491,31 @@ export default function EventRegistration() {
                   <>
                     <Separator />
                     <div>
-                      <h3 className="text-lg font-semibold mb-4 flex items-center">
+                      <h3 className="text-lg font-semibold mb-4 flex items-center text-white">
                         <Users className="w-5 h-5 mr-2" />
                         Team Information
                       </h3>
                       <div className="space-y-4">
                         <div>
-                          <Label htmlFor="teamName">Team Name *</Label>
+                          <Label htmlFor="teamName" className="text-white">Team Name *</Label>
                           <Input
                             id="teamName"
                             value={formData.teamName}
                             onChange={(e) => handleInputChange("teamName", e.target.value)}
-                            className={errors.teamName ? "border-red-500" : ""}
+                            className={`verve-input ${errors.teamName ? "border-red-500" : ""}`}
                           />
-                          {errors.teamName && <p className="text-red-500 text-sm mt-1">{errors.teamName}</p>}
+                          {errors.teamName && <p className="text-red-400 text-sm mt-1">{errors.teamName}</p>}
                         </div>
 
                         <div>
-                          <Label htmlFor="teamMembers">Team Members (Max {event.maxTeamSize} members)</Label>
+                          <Label htmlFor="teamMembers" className="text-white">Team Members (Max {event.maxTeamSize} members)</Label>
                           <Textarea
                             id="teamMembers"
                             value={formData.teamMembers}
                             onChange={(e) => handleInputChange("teamMembers", e.target.value)}
                             placeholder="Enter team member names, roll numbers, and contact details (one per line)"
                             rows={4}
+                            className="verve-input"
                           />
                         </div>
                       </div>
@@ -526,26 +527,28 @@ export default function EventRegistration() {
 
                 {/* Additional Information */}
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">Additional Information</h3>
+                  <h3 className="text-lg font-semibold mb-4 text-white">Additional Information</h3>
                   <div className="space-y-4">
                     <div>
-                      <Label htmlFor="dietaryRestrictions">Dietary Restrictions</Label>
+                      <Label htmlFor="dietaryRestrictions" className="text-white">Dietary Restrictions</Label>
                       <Input
                         id="dietaryRestrictions"
                         value={formData.dietaryRestrictions}
                         onChange={(e) => handleInputChange("dietaryRestrictions", e.target.value)}
                         placeholder="Any food allergies or dietary requirements"
+                        className="verve-input"
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="specialRequirements">Special Requirements</Label>
+                      <Label htmlFor="specialRequirements" className="text-white">Special Requirements</Label>
                       <Textarea
                         id="specialRequirements"
                         value={formData.specialRequirements}
                         onChange={(e) => handleInputChange("specialRequirements", e.target.value)}
                         placeholder="Any accessibility needs or special accommodations"
                         rows={3}
+                        className="verve-input"
                       />
                     </div>
                   </div>
@@ -555,7 +558,7 @@ export default function EventRegistration() {
 
                 {/* Payment Method */}
                 <div>
-                  <h3 className="text-lg font-semibold mb-4 flex items-center">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center text-white">
                     <CreditCard className="w-5 h-5 mr-2" />
                     Payment Method
                   </h3>
@@ -565,11 +568,11 @@ export default function EventRegistration() {
                   >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="online" id="online" />
-                      <Label htmlFor="online">Online Payment (UPI/Card/Net Banking)</Label>
+                      <Label htmlFor="online" className="text-white">Online Payment (UPI/Card/Net Banking)</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="offline" id="offline" />
-                      <Label htmlFor="offline">Pay at Venue</Label>
+                      <Label htmlFor="offline" className="text-white">Pay at Venue</Label>
                     </div>
                   </RadioGroup>
                 </div>
@@ -577,9 +580,9 @@ export default function EventRegistration() {
                 <Separator />
 
                 {/* Security Notice */}
-                <Alert>
-                  <Shield className="h-4 w-4" />
-                  <AlertDescription>
+                <Alert className="bg-blue-500/10 border-blue-500/20">
+                  <Shield className="h-4 w-4 text-blue-400" />
+                  <AlertDescription className="text-blue-300">
                     Your payment information is encrypted and secure. We do not store your payment details.
                   </AlertDescription>
                 </Alert>
@@ -587,16 +590,16 @@ export default function EventRegistration() {
                 {/* Submit Button */}
                 <div className="flex justify-end space-x-4">
                   <Link href={`/student/events/${eventId}/register`}>
-                    <Button variant="outline">Back to Registration</Button>
+                    <Button variant="outline" className="verve-button-outline">Back to Registration</Button>
                   </Link>
                   <Button
                     onClick={handleRegistration}
                     disabled={registering}
-                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                    className="verve-button-primary"
                   >
                     {registering ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black mr-2"></div>
                         Processing Payment...
                       </>
                     ) : (
